@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/msh128/ubuntu-docker:main
-      options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN
+      options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
