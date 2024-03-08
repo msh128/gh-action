@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/msh128/ubuntu-docker:main
+      options: --user 1000
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
