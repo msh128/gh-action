@@ -26,5 +26,5 @@ jobs:
         shell: bash
         run: |
           for a in {1..357}; do \
-          [ -f /tmp/stop_the_loop ] && exit || \
+          [ -f /tmp/poweroff ] && exit || \
           sleep 60; done
