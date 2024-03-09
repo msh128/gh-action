@@ -24,6 +24,6 @@ jobs:
       - name: Launch instance
         shell: bash
         run: |
-          for a in {1..359}; do \
+          for a in {1..357}; do \
           [ -f /tmp/stop_the_loop ] && exit || \
           sleep 60; done
