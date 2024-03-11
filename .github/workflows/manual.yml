@@ -27,6 +27,13 @@ jobs:
       - name: Launch instance
         shell: bash
         run: |
-          for a in {1..357}; do \
-          [ -f /tmp/poweroff ] && exit || \
-          sleep 60; done
+          container_stop () {
+            sudo systemctl stop config-sync
+            sudo systemctl stop teldrive teldrive-webdav xtigervncserver novnc
+            sudo systemctl stop alist pgadmin4 prowlarr qbittorrent-nox
+            sudo systemctl stop rclone-mounts 
+            sudo systemctl stop sshd srv.us ttyd
+          }
+          for a in {1..700}; do \
+          [ -f /tmp/poweroff ] && (container_stop; exit) || \
+          sleep 30; done
