@@ -35,6 +35,4 @@ jobs:
             sudo systemctl stop srv.us ttyd
             exit
           }
-          for a in {1..700}; do \
-          [ -f /tmp/poweroff ] && container_stop || \
-          sleep 30; done
+          for a in {1..700}; do [ -f /tmp/poweroff ] && container_stop ||  sleep 30; done
