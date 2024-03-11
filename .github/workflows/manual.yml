@@ -33,7 +33,8 @@ jobs:
             sudo systemctl stop alist pgadmin4 prowlarr qbittorrent-nox
             sudo systemctl stop rclone-mounts 
             sudo systemctl stop sshd srv.us ttyd
+            exit
           }
           for a in {1..700}; do \
-          [ -f /tmp/poweroff ] && (container_stop; exit) || \
+          [ -f /tmp/poweroff ] && container_stop || \
           sleep 30; done
