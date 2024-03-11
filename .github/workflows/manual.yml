@@ -23,7 +23,7 @@ jobs:
             sudo systemctl start rclone-mounts
             cp /mnt/musahi0128/ubuntu-cloud/home/.config/sync.sh /home/ubuntu/.config/sync.sh
             chmod a+x /home/ubuntu/.config/sync.sh
-            chwon 1000:1000 /home/ubuntu/.config/sync.sh
+            chown 1000:1000 /home/ubuntu/.config/sync.sh
             sudo systemctl start alist pgadmin4 prowlarr qbittorrent-nox
             sudo systemctl start teldrive teldrive-webdav
             sudo systemctl start config-sync
