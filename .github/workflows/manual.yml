@@ -22,14 +22,12 @@ jobs:
           sudo systemctl start rclone-mounts 
           sudo systemctl start alist pgadmin4 prowlarr qbittorrent-nox
           sudo systemctl start teldrive teldrive-webdav xtigervncserver novnc
-          # sudo systemctl start config-sync
           curl -s -d "$(echo Connection information; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
       - name: Launch instance
         shell: bash
         run: |
           container_stop () {
             echo Stopping services
-            # sudo systemctl stop config-sync
             sudo systemctl stop teldrive teldrive-webdav xtigervncserver novnc
             sudo systemctl stop alist pgadmin4 prowlarr qbittorrent-nox
             sudo systemctl stop rclone-mounts 
