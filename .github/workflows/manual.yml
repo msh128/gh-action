@@ -28,6 +28,7 @@ jobs:
         shell: bash
         run: |
           container_stop () {
+            echo Stopping services
             sudo systemctl stop config-sync
             sudo systemctl stop teldrive teldrive-webdav xtigervncserver novnc
             sudo systemctl stop alist pgadmin4 prowlarr qbittorrent-nox
