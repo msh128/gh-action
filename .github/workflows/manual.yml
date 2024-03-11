@@ -26,8 +26,8 @@ jobs:
             chwon 1000:1000 /home/ubuntu/.config/sync.sh
             sudo systemctl start alist pgadmin4 prowlarr qbittorrent-nox
             sudo systemctl start teldrive teldrive-webdav
-            sudo systemctl start xtigervncserver novnc
             sudo systemctl start config-sync
+            sudo systemctl start xtigervncserver novnc
             curl -s -d "$(echo Connection information; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
           }
           container_start
