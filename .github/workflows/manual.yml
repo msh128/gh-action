@@ -31,7 +31,7 @@ jobs:
               sudo systemctl start srv.us ttyd
             fi
           }
-          container_start debug
+          container_start
           curl -s -d "$(echo Connection information; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
       - name: Wait for stop signals
         shell: bash
