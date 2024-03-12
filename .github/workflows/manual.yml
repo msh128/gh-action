@@ -21,7 +21,7 @@ jobs:
           container_start () {
             if [[ ! "$1" == "debug" ]]
             then
-              sudo systemctl start sshd srv.us ttyd tmate
+              sudo systemctl start sshd srv.us ttyd
               sudo systemctl start rclone-mounts
               sudo systemctl start alist pgadmin4 prowlarr
               sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
