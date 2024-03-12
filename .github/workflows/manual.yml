@@ -19,15 +19,20 @@ jobs:
         shell: bash
         run: |
           container_start () {
-            sudo systemctl start sshd srv.us ttyd
-            sudo systemctl start rclone-mounts
-            sudo systemctl start alist pgadmin4 prowlarr qbittorrent-nox
-            sudo systemctl start teldrive teldrive-webdav
-            sudo systemctl start config-sync
-            sudo systemctl start xtigervncserver novnc
-            curl -s -d "$(echo Connection information; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
+            if [[ ! "$1" == "debug" ]]
+            then
+              sudo systemctl start sshd srv.us ttyd
+              sudo systemctl start rclone-mounts
+              sudo systemctl start alist pgadmin4 prowlarr qbittorrent-nox
+              sudo systemctl start teldrive teldrive-webdav
+              sudo systemctl start config-sync
+              sudo systemctl start xtigervncserver novnc
+              curl -s -d "$(echo Connection information; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
+            else
+              sudo systemctl start sshd srv.us ttyd
+            fi
           }
-          container_start
+          container_start debug
       - name: Wait for stop signals
         shell: bash
         run: |
