@@ -46,4 +46,4 @@ jobs:
             echo Services stopped sucesfully
             exit
           }
-          for a in {1..700}; do [ -f /tmp/poweroff ] && container_stop ||  sleep 30; done
+          for a in {1..700}; do [ -f /tmp/poweroff ] && container_stop || sleep 30; done
