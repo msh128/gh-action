@@ -36,16 +36,17 @@ jobs:
           } > /dev/null 2>&1
           setup_host
           /usr/bin/ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901 &
-          # setup () {
-          #   sudo chown $USER:$USER /usr/local/lib/android/sdk -R
-          #   yes | sdkmanager --licenses
-          #   sdkmanager --install 'build-tools;34.0.0' platform-tools
-          #   sdkmanager --install emulator --channel=0
-          #   sdkmanager --install 'system-images;android-29;default;x86' --channel=0
-          #   echo no | avdmanager create avd --force -n test --abi 'default/x86' --package 'system-images;android-29;default;x86'
-          #   /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
-          # }
-          # setup && echo "All good" && echo "Something's wrong"
+          setup () {
+            yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;34.0.0' platform-tools
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-34;google_apis_playstore;x86_64' --channel=0
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install emulator --channel=0
+            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-34;google_apis_playstore;x86_64'
+            sed -i 's/hw.ramSize=96M/hw.ramSize=8192/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/vm.heapSize=64M/vm.heapSize=1024/g' /home/runner/.android/avd/test.avd/config.ini
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -no-snapshot -noaudio -no-boot-anim
+          }
+          setup && echo "All good" && echo "Something's wrong"
       - name: Wait for stop signals
         run: |
           for a in {1..700}; do [ -f /tmp/poweroff ] && exit || sleep 30; done
