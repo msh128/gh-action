@@ -31,7 +31,7 @@ jobs:
             sudo chmod 600 "$HOME/.ssh/id_ed25519"
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
             /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc '/usr/bin/tmux a || /usr/bin/tmux' &
-            # /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1
+            /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1
             /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
           } > /dev/null 2>&1
           setup_host
@@ -54,10 +54,7 @@ jobs:
             sed -i 's/hw.lcd.width=320/hw.lcd.width=720/g' /home/runner/.android/avd/test.avd/config.ini
             echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
             echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
-            echo '#!/bin/bash' > /home/runner/.android/avd/test.xinit.sh
-            echo '/usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim' >> /home/runner/.android/avd/test.xinit.sh
-            chmod a+x /home/runner/.android/avd/test.xinit.sh
-            /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1 -- /home/runner/.android/avd/test.xinit.sh
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim
           }
           setup && echo "All good" && echo "Something's wrong"
       - name: Wait for stop signals
