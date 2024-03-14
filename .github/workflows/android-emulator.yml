@@ -16,7 +16,7 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox icewm icewm-common lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 novnc openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
+          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
           version: 1.0
           execute_install_scripts: true
       - name: Setup host access
@@ -24,7 +24,7 @@ jobs:
           setup_host () {
             sudo apt -yq update
             sudo apt -yq upgrade
-            sudo apt -yq install tmux openssh-client novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy icewm icewm-common pulseaudio
+            sudo apt -yq install tmux openssh-client novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
             sudo apt -yq install --reinstall systemd-sysv
             for a in autoremove purge clean; do sudo apt -yqq $a; done
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
