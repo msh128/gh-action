@@ -25,7 +25,6 @@ jobs:
             sudo apt -yq upgrade
             sudo apt -yq install tmux openssh-client novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy icewm icewm-common pulseaudio
             sudo apt -yq install --reinstall systemd-sysv
-            sudo snap install android-studio --classic
             for a in autoremove purge clean; do sudo apt -yqq $a; done
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
             sudo chmod 600 "$HOME/.ssh/id_ed25519"
