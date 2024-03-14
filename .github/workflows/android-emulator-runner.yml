@@ -30,7 +30,7 @@ jobs:
             sudo chmod 600 "$HOME/.ssh/id_ed25519"
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
             /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc '/usr/bin/tmux a || /usr/bin/tmux' &
-            /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1
+            # /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1
             /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
           } > /dev/null 2>&1
           setup_host
@@ -48,7 +48,7 @@ jobs:
             sed -i 's/vm.heapSize=64M/vm.heapSize=1024/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/hw.mainKeys=yes/hw.mainKeys=no/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/hw.keyboard=no/hw.keyboard=yes/g' /home/runner/.android/avd/test.avd/config.ini
-            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim &
+            /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1 -- /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim
           }
           setup && echo "All good" && echo "Something's wrong"
       - name: Wait for stop signals
