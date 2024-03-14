@@ -38,7 +38,7 @@ jobs:
       - name: Setup emulator
         run: |
           setup () {
-            sudo chown $USER:$USER /usr/local/lib/android/sdk -R
+            sudo chown runner:runner /usr/local/lib/android/sdk -R
             yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;34.0.0' platform-tools
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-34;google_apis_playstore;x86_64' --channel=0
