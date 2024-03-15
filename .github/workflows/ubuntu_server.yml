@@ -21,14 +21,14 @@ jobs:
           container_start () {
             if [[ ! "$1" == "debug" ]]
             then
-              sudo systemctl start sshd srv.us ttyd
+              sudo systemctl start sshd srv.us ssh-j ttyd
               sudo systemctl start rclone-mounts
               sudo systemctl start alist pgadmin4 prowlarr
               sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
               sudo systemctl start config-sync
               sudo systemctl start vncserver novnc
             else
-              sudo systemctl start srv.us ttyd
+              sudo systemctl start srv.us ssh-j ttyd
             fi
           }
           container_start && export STARTUP_MSG="All service started succesfully." ||  export STARTUP_MSG="Something went wrong."
