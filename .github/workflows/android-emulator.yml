@@ -56,9 +56,11 @@ jobs:
             sed -i 's/hw.lcd.width=320/hw.lcd.width=720/g' /home/runner/.android/avd/test.avd/config.ini
             echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
             echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'ForceSwiftshader = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim &
             aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
-            aria2c -c 'https://archive.newpipe.net/fdroid/repo/NewPipe_v0.26.1.apk'
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
             find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
           } > /dev/null 2>&1
