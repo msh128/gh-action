@@ -54,11 +54,12 @@ jobs:
             sed -i 's/hw.lcd.width=320/hw.lcd.width=720/g' /home/runner/.android/avd/test.avd/config.ini
             echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
             echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
-            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim
-            while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | wc -l) == 3 ]; do sleep 3; done
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -noaudio -no-boot-anim &
             aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
+            aria2c -c 'https://archive.newpipe.net/fdroid/repo/NewPipe_v0.26.1.apk'
+            while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | wc -l) == 3 ]; do sleep 3; done
             /usr/local/lib/android/sdk/platform-tools/adb install *.apk
-          }
+          } > /dev/null 2>&1
           setup_emulator && echo "All good" || echo "Something's wrong"
       - name: Wait for stop signals
         run: |
