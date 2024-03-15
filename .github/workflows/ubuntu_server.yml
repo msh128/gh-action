@@ -32,7 +32,7 @@ jobs:
             fi
           }
           container_start && export STARTUP_MSG="All service started succesfully." ||  export STARTUP_MSG="Something went wrong."
-          curl -s -d "$(echo Ubuntu server; echo $STARTUP_MSG; Connection information:; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
+          curl -s -d "$(echo Ubuntu server; echo $STARTUP_MSG; echo Connection information:; sudo journalctl -u srv.us --no-pager | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1
       - name: Wait for stop signals
         shell: bash
         run: |
