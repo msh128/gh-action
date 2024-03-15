@@ -16,20 +16,20 @@ jobs:
           sudo udevadm trigger --name-match=kvm
       - uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
+          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
           version: 1.0
       - name: Setup host access
         run: |
           setup_host () {
             sudo apt -yq update
+            sudo apt -yq install tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
             sudo apt -yq upgrade
-            sudo apt -yq install tmux openssh-client novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
-            sudo apt -yq install --reinstall systemd-sysv
             for a in autoremove purge clean; do sudo apt -yqq $a; done
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
             sudo chmod 600 "$HOME/.ssh/id_ed25519"
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
             /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc '/usr/bin/tmux a || /usr/bin/tmux' &
+            sudo sed -i 's/tigervncconfig -iconic &/#tigervncconfig -iconic &/g' /etc/X11/Xtigervnc-session
             /usr/bin/vncserver -geometry 1488x716 -localhost yes -alwaysshared -SecurityTypes none :1
             /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
           } > /dev/null 2>&1
@@ -41,10 +41,10 @@ jobs:
           setup_emulator () {
             sudo chown runner:runner /usr/local/lib/android/sdk -R
             yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;34.0.0' platform-tools
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-34;google_apis_playstore;x86_64' --channel=0
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;33.0.0' platform-tools
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-33;google_apis_playstore;x86_64' --channel=0
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install emulator --channel=0
-            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-34;google_apis_playstore;x86_64'
+            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-33;google_apis_playstore;x86_64'
             sed -i 's/hw.ramSize=96M/hw.ramSize=8192/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/hw.cpu.ncore=2/hw.cpu.ncore=3/g' /home/runner/.android/avd/test.avd/config.ini
