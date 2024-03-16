@@ -1,6 +1,8 @@
-name: "Automatically backup all repo"
+name: "Backup all repo on schedule"
 on:
   workflow_dispatch:
+  schedule:
+  - cron: "0 */6 * * *"
 jobs:
   perform_backup:
     runs-on: ubuntu-latest
@@ -19,6 +21,6 @@ jobs:
           git clone git@github.com:msh128/ubuntu-docker.git
       - name: Backup to Google Drive
         run: |
-          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 --stats-log-level="NOTICE" \
+          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 --stats-log-level="NOTICE" --stats=0 \
           && (echo "Backup succesfull"; exit) \
           || (echo "Something's wrong. Please check the log for more details"; exit)
