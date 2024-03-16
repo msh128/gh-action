@@ -60,10 +60,7 @@ jobs:
             echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
             aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
-            aria2c -c 'https://d.apkpure.com/b/APK/com.antutu.ABenchMark?version=latest'
-            aria2c -c 'https://d.apkpure.com/b/APK/com.antutu.benchmark.full?version=latest'
             aria2c -c 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
-            aria2c -c 'https://benchmarks.ul.com/downloads/3DMark.apk'
             echo Waiting for the emulator to be fully booting up
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
             find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
