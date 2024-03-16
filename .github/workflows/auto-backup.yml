@@ -7,7 +7,7 @@ jobs:
     steps:
       - name: Install rclone
         run: |
-          curl https://rclone.org/install.sh | sudo bash
+          curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
       - name: Setup SSH key
         uses: webfactory/ssh-agent@v0.9.0
         with: 
@@ -19,6 +19,6 @@ jobs:
           git clone git@github.com:msh128/ubuntu-docker.git
       - name: Backup to Google Drive
         run: |
-          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 -P \
+          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 -P --stats=0 \
           && (echo "Backup succesfull"; exit) \
           || (echo "Something's wrong. Please check the log for more details"; exit)
