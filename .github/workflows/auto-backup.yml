@@ -1,1 +1,24 @@
-
+name: "Automatically backup all repo"
+on:
+  workflow_dispatch:
+jobs:
+  perform_backup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with: 
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Clone all repository locally
+        run: |
+          git clone git@github.com:msh128/gh-action.git
+          git clone git@github.com:msh128/ubuntu-docker-base.git
+          git clone git@github.com:msh128/ubuntu-docker.git
+      - name: Backup to Google Drive
+        run: |
+          rclone -c ./ubuntu-docker/rclone/rclone.config.min copy ./ musahi0128:GitHub/msh128 -P \
+          && (echo "Backup succesfull"; exit) \
+          || (echo "Something's wrong. Please check the log for more details"; exit)
