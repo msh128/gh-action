@@ -58,7 +58,7 @@ jobs:
             echo 'ForceSwiftshader = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
-            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -gpu swiftshader_indirect -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
             aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
             aria2c -c 'https://d.apkpure.com/b/APK/com.antutu.ABenchMark?version=latest'
             aria2c -c 'https://d.apkpure.com/b/APK/com.antutu.benchmark.full?version=latest'
