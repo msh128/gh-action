@@ -19,6 +19,6 @@ jobs:
           git clone git@github.com:msh128/ubuntu-docker.git
       - name: Backup to Google Drive
         run: |
-          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 -P --stats=0 \
+          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 --stats-log-level="NOTICE" \
           && (echo "Backup succesfull"; exit) \
           || (echo "Something's wrong. Please check the log for more details"; exit)
