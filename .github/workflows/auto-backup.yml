@@ -19,9 +19,10 @@ jobs:
           git clone git@github.com:msh128/gh-action.git
           git clone git@github.com:msh128/ubuntu-docker-base.git
           git clone git@github.com:msh128/ubuntu-docker.git
-          git clone git@github.com:msh128/oci-docker.git
+          git clone git@github.com:musahi-0128/oci-runner.git
+          git clone git@github.com:musahi-0128/oci-docker.git
       - name: Backup to Google Drive
         run: |
-          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min copy ./ musahi0128:GitHub/msh128 --stats-log-level="NOTICE" --stats=1h \
+          rclone --config=./ubuntu-docker/home/.config/rclone/rclone.conf.min sync ./ musahi0128:GitHub/msh128 --stats-log-level="NOTICE" --stats=1h \
           && (echo "Backup succesfull"; exit) \
           || (echo "Something's wrong. Please check the log for more details"; exit)
