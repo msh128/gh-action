@@ -83,13 +83,9 @@ jobs:
         run: |
           pre_stop () {
             echo Powering off the emulator
-            [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p
-            echo Sleep for 10 seconds
-            sleep 10
-            echo Done
+            [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p > /dev/null 2>&1
             echo Sync local emulator files to the cloud
             rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h
-            echo Done
             exit
           }
           for a in {1..1375}; do [ -f /tmp/poweroff ] && pre_stop || sleep 15; done
