@@ -84,5 +84,5 @@ jobs:
       - name: Wait for stop signals
         run: |
           for a in {1..1400}; do [ -f /tmp/poweroff ] \
-            && (rclone copy ~/.android musahi0128:Android/31 --stats-log-level="NOTICE" --stats=1h; exit) \
+            && (/usr/local/lib/android/sdk/platform-tools/adb reboot -p; rclone copy ~/.android musahi0128:Android/31 --stats-log-level="NOTICE" --stats=1h; exit) \
             || sleep 15; done
