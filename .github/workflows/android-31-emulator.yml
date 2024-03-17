@@ -61,7 +61,7 @@ jobs:
             echo 'ForceSwiftshader = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
-            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -use-host-vulkan -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
             aria2c -c -q 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
             aria2c -c -q 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
             echo Waiting for the emulator to be fully booting up
