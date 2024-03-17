@@ -36,14 +36,15 @@ jobs:
             fi
           }
           ntfy_message () {
-            echo Ubuntu server on GitHub Action
-            echo $STARTUP_MSG
-            echo Connection information:
+            echo Ubuntu server
+            echo ""
+            echo Connect via srv.us:
             sudo journalctl -u srv.us --no-pager | grep ': https'
-            echo SSH-J.com connection string:
+            echo ""
+            echo Connect via ssh-j.com:
             echo "ssh ${SSH_J_USERNAME}@ssh-j.com -N -L 127.0.1.4:22:${SSH_J_HOSTNAME}:22 -L 127.0.1.4:7681:${SSH_J_HOSTNAME}:7681 -L 127.0.1.4:8081:${SSH_J_HOSTNAME}:8081 -L 127.0.1.4:9696:${SSH_J_HOSTNAME}:9696 -L 127.0.1.4:8082:${SSH_J_HOSTNAME}:8082 -L 127.0.1.4:8083:${SSH_J_HOSTNAME}:8083 -L 127.0.1.4:5432:${SSH_J_HOSTNAME}:5432 -L 127.0.1.4:5244:${SSH_J_HOSTNAME}:5244 -L 127.0.1.4:5901:${SSH_J_HOSTNAME}:5901 -L 127.0.1.4:6080:${SSH_J_HOSTNAME}:6080"
           }
-          container_start && export STARTUP_MSG="All service started succesfully." ||  export STARTUP_MSG="Something went wrong."
+          container_start && echo "All good." || echo "Something's wrong"
           curl -s -d "$(ntfy_message)" ntfy.sh/$NTFY > /dev/null 2>&1
       - name: Wait for stop signals
         shell: bash
@@ -58,4 +59,4 @@ jobs:
             echo Services stopped sucesfully
             exit
           }
-          for a in {1..700}; do [ -f /tmp/poweroff ] && container_stop || sleep 30; done
+          for a in {1..6900}; do [ -f /tmp/poweroff ] && container_stop || sleep 3; done
