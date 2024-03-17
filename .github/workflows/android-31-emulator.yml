@@ -20,10 +20,10 @@ jobs:
           version: 1.0
       - name: Setup bash aliases
         run: |
-          sudo echo "alias sdkmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" >> /etc/bash.bashrc
-          sudo echo "alias avdmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" >> /etc/bash.bashrc
-          sudo echo "alias emulator=/usr/local/lib/android/sdk/emulator/emulator" >> /etc/bash.bashrc
-          sudo echo "alias adb=/usr/local/lib/android/sdk/platform-tools/adb" >> /etc/bash.bashrc
+          echo alias sdkmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" >> ~/.bashrc
+          echo alias avdmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" >> ~/.bashrc
+          echo alias emulator="/usr/local/lib/android/sdk/emulator/emulator" >> ~/.bashrc
+          echo alias adb="/usr/local/lib/android/sdk/platform-tools/adb" >> ~/.bashrc
       - name: Setup host access
         run: |
           setup_host () {
@@ -34,7 +34,7 @@ jobs:
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
             sudo chmod 600 "$HOME/.ssh/id_ed25519"
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
-            /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc '/usr/bin/tmux a || /usr/bin/tmux' &
+            /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux' &
             sudo sed -i 's/tigervncconfig -iconic &/#tigervncconfig -iconic &/g' /etc/X11/Xtigervnc-session
             /usr/bin/vncserver -geometry 1488x716 -localhost yes -alwaysshared -SecurityTypes none :1
             /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
@@ -44,6 +44,7 @@ jobs:
             || (echo "Something's went wrong. Please inspect the log and your workflow file then try again"; exit)
       - name: Setup emulator
         run: |
+          source ~/.bashrc
           setup_emulator () {
             sudo chown runner:runner /usr/local/lib/android/sdk -R
             yes | sdkmanager --licenses
