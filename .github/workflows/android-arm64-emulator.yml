@@ -42,9 +42,9 @@ jobs:
             sudo chown runner:runner /usr/local/lib/android/sdk -R
             yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;33.0.0' platform-tools
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-33;google_apis_playstore;arm64' --channel=0
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-33;google_apis_playstore;arm64-v8a' --channel=0
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install emulator --channel=0
-            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'arm64' --package 'system-images;android-33;google_apis_playstore;arm64'
+            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'arm64-v8a' --package 'system-images;android-33;google_apis_playstore;arm64-v8a'
             sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/hw.cpu.ncore=2/hw.cpu.ncore=3/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/vm.heapSize=64M/vm.heapSize=1024/g' /home/runner/.android/avd/test.avd/config.ini
