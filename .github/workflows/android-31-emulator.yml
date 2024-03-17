@@ -86,6 +86,11 @@ jobs:
           setup_emulator && echo "All good" || echo "Something's wrong"
       - name: Wait for stop signals
         run: |
-          for a in {1..1400}; do [ -f /tmp/poweroff ] \
-            && ([ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p; rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h; exit) \
-            || sleep 15; done
+          pre_stop () {
+            [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p
+            sleep 10
+            rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h
+            exit
+          }
+          for a in {1..1400}; do [ -f /tmp/poweroff ] && pre_stop || sleep 15; done
+          pre_stop
