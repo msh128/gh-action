@@ -1,0 +1,71 @@
+name: "Android ARM emulator"
+on:
+  workflow_dispatch:
+env:
+  DEBIAN_FRONTEND: noninteractive
+  TZ: Asia/Jakarta
+  NTFY: ${{ secrets.NTFY }}
+jobs:
+  launch_instance:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Enable KVM
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: awalsh128/cache-apt-pkgs-action@latest
+        with:
+          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
+          version: 1.0
+      - name: Setup host access
+        run: |
+          setup_host () {
+            sudo apt -yq update
+            sudo apt -yq install tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
+            sudo apt -yq upgrade
+            for a in autoremove purge clean; do sudo apt -yqq $a; done
+            ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
+            sudo chmod 600 "$HOME/.ssh/id_ed25519"
+            curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
+            /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - Android emulator" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc '/usr/bin/tmux a || /usr/bin/tmux' &
+            sudo sed -i 's/tigervncconfig -iconic &/#tigervncconfig -iconic &/g' /etc/X11/Xtigervnc-session
+            /usr/bin/vncserver -geometry 1488x716 -localhost yes -alwaysshared -SecurityTypes none :1
+            /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
+          } > /dev/null 2>&1
+          setup_host \
+            && (/usr/bin/ssh -o StrictHostKeyChecking=no -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901 > /tmp/srv.us.addr 2>&1 & while [ ! -f /tmp/srv.us.addr ]; do sleep 1; done; curl -s -d "$(echo Workflow: Android ARM emulator; echo Connection information:; cat /tmp/srv.us.addr | grep ': https')" ntfy.sh/$NTFY > /dev/null 2>&1) \
+            || (echo "Something's went wrong. Please inspect the log and your workflow file then try again"; exit)
+      - name: Setup emulator
+        run: |
+          setup_emulator () {
+            sudo chown runner:runner /usr/local/lib/android/sdk -R
+            yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;33.0.0' platform-tools
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-33;google_apis_playstore;arm64' --channel=0
+            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install emulator --channel=0
+            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'arm64' --package 'system-images;android-33;google_apis_playstore;arm64'
+            sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.cpu.ncore=2/hw.cpu.ncore=3/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/vm.heapSize=64M/vm.heapSize=1024/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.mainKeys=yes/hw.mainKeys=no/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.keyboard=no/hw.keyboard=yes/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.lcd.density=160/hw.lcd.density=360/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.lcd.height=640/hw.lcd.height=1600/g' /home/runner/.android/avd/test.avd/config.ini
+            sed -i 's/hw.lcd.width=320/hw.lcd.width=720/g' /home/runner/.android/avd/test.avd/config.ini
+            echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
+            echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'ForceSwiftshader = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
+            echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
+            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -use-host-vulkan -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
+            aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
+            aria2c -c 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
+            echo Waiting for the emulator to be fully booting up
+            while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
+            find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
+          } > /dev/null 2>&1
+          setup_emulator && echo "All good" || echo "Something's wrong"
+      - name: Wait for stop signals
+        run: |
+          for a in {1..1420}; do [ -f /tmp/poweroff ] && exit || sleep 15; done
