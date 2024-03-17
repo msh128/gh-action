@@ -18,12 +18,6 @@ jobs:
         with:
           packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
           version: 1.0
-      - name: Setup bash aliases
-        run: |
-          echo alias sdkmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" >> ~/.bashrc
-          echo alias avdmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" >> ~/.bashrc
-          echo alias emulator="/usr/local/lib/android/sdk/emulator/emulator" >> ~/.bashrc
-          echo alias adb="/usr/local/lib/android/sdk/platform-tools/adb" >> ~/.bashrc
       - name: Setup host access
         run: |
           setup_host () {
@@ -44,7 +38,10 @@ jobs:
             || (echo "Something's went wrong. Please inspect the log and your workflow file then try again"; exit)
       - name: Setup emulator
         run: |
-          source ~/.bashrc
+          alias sdkmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager"
+          alias avdmanager="/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager"
+          alias emulator="/usr/local/lib/android/sdk/emulator/emulator"
+          alias adb="/usr/local/lib/android/sdk/platform-tools/adb"
           setup_emulator () {
             sudo chown runner:runner /usr/local/lib/android/sdk -R
             yes | sdkmanager --licenses
