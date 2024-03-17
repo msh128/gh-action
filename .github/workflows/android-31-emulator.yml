@@ -23,17 +23,17 @@ jobs:
         with: 
           ssh-private-key: |
             ${{ secrets.PRIVATE_KEY_1 }}
-      # - name: Setup rclone
-      #   run: |
-      #     curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
-      #     git clone git@github.com:msh128/ubuntu-docker.git
-      #     mkdir -p ~/.config/rclone
-      #     mv ubuntu-docker/home/.config/rclone/rclone.conf.min ~/.config/rclone/rclone.conf
+      - name: Setup rclone
+        run: |
+          curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
+          git clone git@github.com:msh128/secrets.git
+          mkdir -p ~/.config/rclone
+          mv -v secrets/rclone/* ~/.config/rclone/
       - name: Setup host access
         run: |
           setup_host () {
             sudo apt -yq update
-            sudo apt -yq install tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
+            sudo apt -yq install fuse3 tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
             sudo apt -yq upgrade
             for a in autoremove purge clean; do sudo apt -yqq $a; done
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
