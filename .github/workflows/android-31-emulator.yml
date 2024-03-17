@@ -92,5 +92,5 @@ jobs:
             rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h
             exit
           }
-          for a in {1..1400}; do [ -f /tmp/poweroff ] && pre_stop || sleep 15; done
+          for a in {1..1350}; do [ -f /tmp/poweroff ] && pre_stop || sleep 15; done
           pre_stop
