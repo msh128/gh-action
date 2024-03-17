@@ -58,7 +58,7 @@ jobs:
               cat /tmp/srv.us.addr | grep ': https'; \
               echo ""; \
               echo Connect via ssh-j.com:; \
-              echo 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N '${SSH_J_USERNAME}'@ssh-j.com -R '${SSH_J_HOSTNAME_ANDROID}':7681:127.0.0.1:7681 -R '${SSH_J_HOSTNAME_ANDROID}':6080:127.0.0.1:6080 -R '${SSH_J_HOSTNAME_ANDROID}':5901:127.0.0.1:5901')" ntfy.sh/$NTFY > /dev/null 2>&1
+              echo 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N '${SSH_J_USERNAME}'@ssh-j.com -L 127.0.0.1:7681:'${SSH_J_HOSTNAME_ANDROID}':7681 -L 127.0.0.1:6080:'${SSH_J_HOSTNAME_ANDROID}':6080 -L 127.0.0.1:5901:'${SSH_J_HOSTNAME_ANDROID}':5901')" ntfy.sh/$NTFY > /dev/null 2>&1
           }
           setup_host \
             && connection_info \
