@@ -19,6 +19,8 @@ jobs:
         shell: bash
         run: |
           container_start () {
+            sudo apt update
+            sudo apt -yqq full-upgrade
             if [[ ! "$1" == "debug" ]]
             then
               sudo systemctl start sshd srv.us ssh-j ttyd
