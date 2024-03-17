@@ -53,7 +53,8 @@ jobs:
           } > /dev/null 2>&1
           connection_info () {
             while [ ! -f /tmp/srv.us.addr ]; do sleep 1; done
-            curl -s -d "$(echo Workflow: Android x86 emulator; \
+            curl -s -d "$(echo Android emulator; \
+              echo ""; \
               echo Connect via srv.us:; \
               cat /tmp/srv.us.addr | grep ': https'; \
               echo ""; \
