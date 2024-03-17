@@ -18,6 +18,12 @@ jobs:
         with:
           packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
           version: 1.0
+      - name: Setup bash aliases
+        run: |
+          echo "alias sdkmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" > /etc/bash.bashrc
+          echo "alias avdmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" > /etc/bash.bashrc
+          echo "alias emulator=/usr/local/lib/android/sdk/emulator/emulator" > /etc/bash.bashrc
+          echo "alias adb=/usr/local/lib/android/sdk/platform-tools/adb" > /etc/bash.bashrc
       - name: Setup host access
         run: |
           setup_host () {
@@ -40,11 +46,33 @@ jobs:
         run: |
           setup_emulator () {
             sudo chown runner:runner /usr/local/lib/android/sdk -R
-            yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;33.0.0' platform-tools
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'system-images;android-33;google_apis_playstore;x86_64' --channel=0
-            /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install emulator --channel=0
-            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-33;google_apis_playstore;x86_64'
+            yes | sdkmanager --licenses
+            sdkmanager --uninstall 'build-tools;32.0.0'
+            sdkmanager --uninstall 'build-tools;33.0.0'
+            sdkmanager --uninstall 'build-tools;33.0.1'
+            sdkmanager --uninstall 'build-tools;33.0.2'
+            sdkmanager --uninstall 'build-tools;33.0.3'
+            sdkmanager --uninstall 'build-tools;34.0.0'
+            sdkmanager --uninstall 'cmake;3.10.2.4988404'
+            sdkmanager --uninstall 'cmake;3.18.1'
+            sdkmanager --uninstall 'emulator'
+            sdkmanager --uninstall 'extras;android;m2repository'
+            sdkmanager --uninstall 'extras;google;google_play_services'
+            sdkmanager --uninstall 'extras;google;m2repository'
+            sdkmanager --uninstall 'ndk;24.0.8215888'
+            sdkmanager --uninstall 'ndk;25.2.9519653'
+            sdkmanager --uninstall 'platform-tools'
+            sdkmanager --uninstall 'platforms;android-32'
+            sdkmanager --uninstall 'platforms;android-33'
+            sdkmanager --uninstall 'platforms;android-33-ext4'
+            sdkmanager --uninstall 'platforms;android-33-ext5'
+            sdkmanager --uninstall 'platforms;android-34'
+            sdkmanager --uninstall 'platforms;android-34-ext10'
+            sdkmanager --uninstall 'platforms;android-34-ext8'
+            sdkmanager --install 'build-tools;31.0.0' platform-tools
+            sdkmanager --install 'system-images;android-31;google_apis_playstore;x86_64' --channel=0
+            sdkmanager --install emulator --channel=0
+            echo no | avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-31;google_apis_playstore;x86_64'
             sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/hw.cpu.ncore=2/hw.cpu.ncore=3/g' /home/runner/.android/avd/test.avd/config.ini
             sed -i 's/vm.heapSize=64M/vm.heapSize=1024/g' /home/runner/.android/avd/test.avd/config.ini
@@ -58,12 +86,12 @@ jobs:
             echo 'ForceSwiftshader = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
             echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
-            DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -use-host-vulkan -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
+            DISPLAY=:1 emulator -avd test -accel on -gpu host -use-host-vulkan -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -netfast & 
             aria2c -c 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
             aria2c -c 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
             echo Waiting for the emulator to be fully booting up
-            while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
-            find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
+            while [ ! $(adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
+            find ~+ -name '*.apk' -exec adb install "{}" \;
           } > /dev/null 2>&1
           setup_emulator && echo "All good" || echo "Something's wrong"
       - name: Wait for stop signals
