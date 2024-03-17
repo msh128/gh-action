@@ -61,31 +61,31 @@ jobs:
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --uninstall 'ndk;24.0.8215888' 'ndk;25.2.9519653'
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --uninstall 'platforms;android-32' 'platforms;android-33' 'platforms;android-33-ext4' 'platforms;android-33-ext5' 'platforms;android-34' 'platforms;android-34-ext10' 'platforms;android-34-ext8'
             /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --install 'build-tools;31.0.0' platform-tools 'system-images;android-31;google_apis_playstore;x86_64' --channel=0
-            echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-31;google_apis_playstore;x86_64'
-            sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g
-              s/hw.cpu.ncore=2/hw.cpu.ncore=3/g
-              s/vm.heapSize=64M/vm.heapSize=1024/g
-              s/hw.mainKeys=yes/hw.mainKeys=no/g
-              s/hw.keyboard=no/hw.keyboard=yes/g
-              s/hw.lcd.density=160/hw.lcd.density=360/g
-              s/hw.lcd.height=640/hw.lcd.height=1600/g
-              s/hw.lcd.width=320/hw.lcd.width=720/g
-              s/disk.cachePartition.size=66MB/disk.cachePartition.size=512MB/g' /home/runner/.android/avd/test.avd/config.ini
-            echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
-            echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
-            echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
-            echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
-            # rclone copy musahi0128:Android/31 ~/.android --stats-log-level="NOTICE" --stats=1h
+            # echo no | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager create avd --force -n test --abi 'x86_64' --package 'system-images;android-31;google_apis_playstore;x86_64'
+            # sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g
+            #   s/hw.cpu.ncore=2/hw.cpu.ncore=3/g
+            #   s/vm.heapSize=64M/vm.heapSize=1024/g
+            #   s/hw.mainKeys=yes/hw.mainKeys=no/g
+            #   s/hw.keyboard=no/hw.keyboard=yes/g
+            #   s/hw.lcd.density=160/hw.lcd.density=360/g
+            #   s/hw.lcd.height=640/hw.lcd.height=1600/g
+            #   s/hw.lcd.width=320/hw.lcd.width=720/g
+            #   s/disk.cachePartition.size=66MB/disk.cachePartition.size=512MB/g' /home/runner/.android/avd/test.avd/config.ini
+            # echo 'Vulkan = off' > /home/runner/.android/advancedFeatures.ini
+            # echo 'GLDirectMem = on' >> /home/runner/.android/advancedFeatures.ini
+            # echo 'KVM = on' >> /home/runner/.android/advancedFeatures.ini
+            # echo 'MultiDisplay = off' >> /home/runner/.android/advancedFeatures.ini
+            rclone copy drive:android/31 ~/.android --stats-log-level="NOTICE" --stats=1h
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -partition-size 8192 -netfast & 
-            aria2c -c -q 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
-            aria2c -c -q 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
-            echo Waiting for the emulator to be fully booting up
-            while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
-            find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
+            # aria2c -c -q 'https://d.apkpure.com/b/APK/ru.andr7e.deviceinfohw?version=latest'
+            # aria2c -c -q 'https://d.apkpure.com/b/APK/com.cpuid.cpu_z?version=latest'
+            # echo Waiting for the emulator to be fully booting up
+            # while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
+            # find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
           } > /dev/null 2>&1
           setup_emulator && echo "All good" || echo "Something's wrong"
       - name: Wait for stop signals
         run: |
           for a in {1..1400}; do [ -f /tmp/poweroff ] \
-            && (/usr/local/lib/android/sdk/platform-tools/adb reboot -p; exit) \
+            && (/usr/local/lib/android/sdk/platform-tools/adb reboot -p; rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h; exit) \
             || sleep 15; done
