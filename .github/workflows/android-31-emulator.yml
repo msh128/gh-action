@@ -65,8 +65,7 @@ jobs:
             sdkmanager --uninstall 'platforms;android-34'
             sdkmanager --uninstall 'platforms;android-34-ext10'
             sdkmanager --uninstall 'platforms;android-34-ext8'
-            sdkmanager --install 'build-tools;31.0.0' platform-tools
-            sdkmanager --install 'system-images;android-31;google_apis_playstore;x86_64' --channel=0
+            sdkmanager --install 'build-tools;31.0.0' 'system-images;android-31;google_apis_playstore;x86_64' --channel=0
             echo no | avdmanager create avd --force --name test --abi 'x86_64' --package 'system-images;android-31;google_apis_playstore;x86_64'
             sed -i 's/PlayStore.enabled=no/PlayStore.enabled=yes/g
               s/hw.cpu.ncore=2/hw.cpu.ncore=3/g
