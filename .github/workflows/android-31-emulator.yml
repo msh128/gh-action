@@ -5,6 +5,7 @@ env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
   NTFY: ${{ secrets.NTFY }}
+  GH_EMAIL: ${{ secrets.GH_EMAIL }}
 jobs:
   launch_instance:
     runs-on: ubuntu-latest
@@ -27,6 +28,8 @@ jobs:
         run: |
           curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
           git clone git@github.com:msh128/secrets.git
+          git config --global user.email "${GH_EMAIL}"
+          git config --global user.name "msh128"
           mkdir -p ~/.config/rclone
           cp -v secrets/rclone/* ~/.config/rclone/
       - name: Setup host access
