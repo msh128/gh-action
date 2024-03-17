@@ -28,7 +28,7 @@ jobs:
           curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
           git clone git@github.com:msh128/ubuntu-docker.git
           mkdir -p ~/.config/rclone
-          mv ubuntu-docker/home/.config/rclone/rclone.conf.min ~/.config/rclone/
+          mv ubuntu-docker/home/.config/rclone/rclone.conf.min ~/.config/rclone/rclone.conf
       - name: Setup host access
         run: |
           setup_host () {
