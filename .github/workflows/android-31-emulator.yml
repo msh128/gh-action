@@ -69,7 +69,7 @@ jobs:
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
             find ~+ -name '*.apk' -exec /usr/local/lib/android/sdk/platform-tools/adb install "{}" \;
           } > /dev/null 2>&1
-          setup_/usr/local/lib/android/sdk/emulator/emulator && echo "All good" || echo "Something's wrong"
+          setup_emulator && echo "All good" || echo "Something's wrong"
       - name: Wait for stop signals
         run: |
           for a in {1..1420}; do [ -f /tmp/poweroff ] && exit || sleep 15; done
