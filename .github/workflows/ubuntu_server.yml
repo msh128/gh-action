@@ -36,7 +36,7 @@ jobs:
             fi
           }
           ntfy_message () {
-            echo Ubuntu server
+            echo Ubuntu server on GitHub Action
             echo $STARTUP_MSG
             echo Connection information:
             sudo journalctl -u srv.us --no-pager | grep ': https'
