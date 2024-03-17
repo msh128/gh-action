@@ -20,10 +20,10 @@ jobs:
           version: 1.0
       - name: Setup bash aliases
         run: |
-          sudo echo "alias sdkmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" > /etc/bash.bashrc
-          sudo echo "alias avdmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" > /etc/bash.bashrc
-          sudo echo "alias emulator=/usr/local/lib/android/sdk/emulator/emulator" > /etc/bash.bashrc
-          sudo echo "alias adb=/usr/local/lib/android/sdk/platform-tools/adb" > /etc/bash.bashrc
+          sudo echo "alias sdkmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager" >> /etc/bash.bashrc
+          sudo echo "alias avdmanager=/usr/local/lib/android/sdk/cmdline-tools/latest/bin/avdmanager" >> /etc/bash.bashrc
+          sudo echo "alias emulator=/usr/local/lib/android/sdk/emulator/emulator" >> /etc/bash.bashrc
+          sudo echo "alias adb=/usr/local/lib/android/sdk/platform-tools/adb" >> /etc/bash.bashrc
       - name: Setup host access
         run: |
           setup_host () {
