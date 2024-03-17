@@ -1,4 +1,4 @@
-name: "Android x86 emulator"
+name: "Android emulator"
 on:
   workflow_dispatch:
 env:
