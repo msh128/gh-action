@@ -24,6 +24,6 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.github_token }}
         registry: ghcr.io
-        image: msh128/ubuntu-docker:${{ inputs.desktop-env }}
+        image: ghcr.io/msh128/ubuntu-docker:${{ inputs.desktop-env }}
         options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged
         run: /usr/bin/systemctl
