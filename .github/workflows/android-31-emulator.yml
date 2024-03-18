@@ -83,7 +83,7 @@ jobs:
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -partition-size 14848 -netfast & 
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
           } > /dev/null 2>&1
-          setup_emulator && echo "All good. The emulator will be started shortly." || echo "Something's wrong"
+          setup_emulator && echo "All good. The emulator will be ready shortly." || echo "Something's wrong"
       - name: Wait for stop signals
         run: |
           pre_stop () {
