@@ -17,11 +17,18 @@ jobs:
           echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
           sudo udevadm control --reload-rules
           sudo udevadm trigger --name-match=kvm
-      - uses: awalsh128/cache-apt-pkgs-action@latest
+      - name: Restore apt packages from Action cache 
+        uses: awalsh128/cache-apt-pkgs-action@latest
         with:
           packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox fuse3 lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
           version: 1.0
-      - uses: actions/cache@v4
+      - name: Remove pre-installed android sdk
+        run: |
+          sudo rm -rf /usr/local/lib/android/sdk
+          sudo mkdir -p /usr/local/lib/android/sdk
+          sudo chown runner:runner /usr/local/lib/android/sdk -R
+      - name: Restore fully configured android sdk from Action cache
+        uses: actions/cache@v4
         with:
           path: /usr/local/lib/android/sdk
           key: android-sdk
