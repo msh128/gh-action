@@ -78,8 +78,8 @@ jobs:
       - name: Setup emulator
         run: |
           setup_emulator () {
-            sudo chown runner:runner /usr/local/lib/android/sdk -R
-            yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
+            # sudo chown runner:runner /usr/local/lib/android/sdk -R
+            # yes | /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --licenses
             # /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --uninstall 'build-tools;32.0.0' 'build-tools;33.0.0' 'build-tools;33.0.1' 'build-tools;33.0.2' 'build-tools;33.0.3' 'build-tools;34.0.0'
             # /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --uninstall 'cmake;3.10.2.4988404' 'cmake;3.18.1'
             # /usr/local/lib/android/sdk/cmdline-tools/latest/bin/sdkmanager --uninstall 'extras;android;m2repository' 'extras;google;m2repository'
