@@ -22,7 +22,7 @@ jobs:
       - name: Restore apt packages from Action cache 
         uses: awalsh128/cache-apt-pkgs-action@latest
         with:
-          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox fuse3 lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n xserver-xorg-video-dummy
+          packages: apache2 apache2-bin apache2-data apache2-utils aspnetcore-runtime-6.0 aspnetcore-runtime-7.0 aspnetcore-targeting-pack-6.0 aspnetcore-targeting-pack-7.0 aspnetcore-targeting-pack-8.0 dotnet-apphost-pack-6.0 dotnet-apphost-pack-7.0 dotnet-apphost-pack-8.0 dotnet-hostfxr-6.0 dotnet-runtime-6.0 dotnet-runtime-7.0 dotnet-runtime-deps-6.0 dotnet-runtime-deps-7.0 dotnet-runtime-deps-8.0 dotnet-sdk-6.0 dotnet-sdk-7.0 dotnet-targeting-pack-6.0 dotnet-targeting-pack-7.0 dotnet-targeting-pack-8.0 firefox fuse3 lib32gcc-s1 lib32stdc++6 libobjc4 netstandard-targeting-pack-2.1 ncdu novnc openbox openssh-client podman pulseaudio systemd-sysv tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-advantage-tools ubuntu-pro-client-l10n wmctrl xserver-xorg-video-dummy
           version: 1.0
       - name: Remove pre-installed android sdk
         run: |
@@ -51,7 +51,7 @@ jobs:
         run: |
           setup_host () {
             sudo apt -yq update
-            sudo apt -yq install fuse3 tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata xserver-xorg-video-dummy openbox pulseaudio
+            sudo apt -yq install fuse3 tmux openssh-client ncdu novnc tigervnc-standalone-server tigervnc-xorg-extension tzdata wmctrl xserver-xorg-video-dummy openbox pulseaudio 
             sudo apt -yq upgrade
             for a in autoremove purge clean; do sudo apt -yqq $a; done
             ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N ""
@@ -82,6 +82,7 @@ jobs:
           setup_emulator () {
             rclone copy drive:android/31 ~/.android --stats-log-level="NOTICE" --stats=1h
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -partition-size 14848 -netfast & 
+            DISPLAY=:1 wmctrl -r "Android Emulator - test:5554" -e 0,1117,18,312,693
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
           } > /dev/null 2>&1
           setup_emulator && echo "All good. The emulator should be available soon." || echo "There's a problem."
