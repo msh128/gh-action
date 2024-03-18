@@ -34,7 +34,7 @@ jobs:
             else
               sudo systemctl start srv.us ssh-j ttyd
             fi
-          }
+          } > /dev/null 2>&1
           ntfy_message () {
             echo Ubuntu server
             echo ""
