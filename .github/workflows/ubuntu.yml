@@ -59,11 +59,11 @@ jobs:
         run: |
           container_stop () {
             echo Stop signal received, stopping services
-            sudo systemctl stop vncserver novnc
-            sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav
-            sudo systemctl stop alist pgadmin4 prowlarr
-            sudo systemctl stop rclone-mounts
-            sudo systemctl stop config-sync
+            sudo systemctl stop vncserver novnc -vvvv
+            sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav -vvvv
+            sudo systemctl stop alist pgadmin4 prowlarr -vvvv
+            sudo systemctl stop rclone-mounts -vvvv
+            sudo systemctl stop config-sync -vvvv
             echo Services stopped sucesfully
             exit
           }
