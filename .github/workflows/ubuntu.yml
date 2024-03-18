@@ -1,4 +1,4 @@
-name: "Ubuntu Server"
+name: "Ubuntu"
 on:
   workflow_dispatch:
 env:
@@ -36,7 +36,7 @@ jobs:
             fi
           } > /dev/null 2>&1
           ntfy_message () {
-            echo Ubuntu server
+            echo Ubuntu on GitHub Action
             echo ""
             echo Connect via srv.us:
             sudo journalctl -u srv.us --no-pager | grep ': https'
