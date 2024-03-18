@@ -25,6 +25,6 @@ jobs:
         password: ${{ secrets.github_token }}
         registry: ghcr.io
         image: ghcr.io/msh128/ubuntu-docker:${{ inputs.desktop-env }}
-        options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged -v /run/systemd/system:/run/systemd/system -v /bin/systemctl:/bin/systemctl -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket -v /usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu -v /lib/systemd:/lib/systemd -it
+        options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged -v /run/systemd/system:/run/systemd/system -v /bin/systemctl:/bin/systemctl -v /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket -v /usr/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu -v /lib/systemd:/lib/systemd
         run: /usr/bin/sudo /bin/systemctl default -vvvv
         shell: /bin/bash
