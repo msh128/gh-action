@@ -26,5 +26,5 @@ jobs:
         registry: ghcr.io
         image: ghcr.io/msh128/ubuntu-docker:${{ inputs.desktop-env }}
         options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged
-        run: /usr/bin/sudo /usr/bin/systemctl default; while [ ! -f /tmp/poweroff]; do sleep 3; done
+        run: /usr/bin/sudo /usr/bin/systemctl default; for a in {1..6900}; do [ -f /tmp/poweroff ] && (sudo poweroff; exit) || sleep 3; done
         shell: /bin/bash
