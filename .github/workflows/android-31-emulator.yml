@@ -82,7 +82,7 @@ jobs:
           setup_emulator () {
             rclone copy drive:android/31 ~/.android --stats-log-level="NOTICE" --stats=1h
             DISPLAY=:1 /usr/local/lib/android/sdk/emulator/emulator -avd test -accel on -gpu host -timezone Asia/Jakarta -noaudio -no-boot-anim -memory 8192 -partition-size 14848 -netfast & 
-            DISPLAY=:1 wmctrl -r "Android Emulator - test:5554" -e 0,1117,18,312,693
+            DISPLAY=:1 wmctrl -r "Android Emulator - test:5554" -e 0,1114,18,312,693
             while [ ! $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ]; do sleep 3; done
           } > /dev/null 2>&1
           setup_emulator && echo "All good. The emulator should be available soon." || echo "There's a problem."
