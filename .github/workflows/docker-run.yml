@@ -1,0 +1,29 @@
+name: "Ubuntu with Docker Run"
+on:
+  workflow_dispatch:
+    inputs:
+      desktop-env:
+        type: choice
+        description: Select desktop environment
+        options:
+        - xubuntu-core
+        - kde-plasma
+        - cinnamon
+env:
+  DEBIAN_FRONTEND: noninteractive
+  TZ: Asia/Jakarta
+  NTFY: ${{ secrets.NTFY }}
+  SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
+  SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
+jobs:
+  launch_instance:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: addnab/docker-run-action@v3
+      with:
+        username: ${{ github.actor }}
+        password: ${{ secrets.github_token }}
+        registry: ghcr.io
+        image: msh128/ubuntu-docker:${{ inputs.desktop-env }}
+        options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged
+        run: /usr/bin/systemctl
