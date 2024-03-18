@@ -8,6 +8,7 @@ on:
         options:
         - xubuntu-core
         - kde-plasma
+        - cinnamon
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
