@@ -1,6 +1,13 @@
 name: "Ubuntu"
 on:
   workflow_dispatch:
+    inputs:
+      desktop-env:
+        type: choice
+        description: Select desktop environment
+        options:
+        - xubuntu-core
+        - kde-plasma
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
@@ -11,7 +18,7 @@ jobs:
   launch_instance:
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/msh128/ubuntu-docker:latest
+      image: ghcr.io/msh128/ubuntu-docker:${{ inputs.desktop-env }}
       options: --user 1000 --device /dev/fuse --cap-add SYS_ADMIN --privileged
       credentials:
         username: ${{ github.actor }}
