@@ -4,7 +4,7 @@ on:
 env:
   NTFY: ${{ secrets.NTFY }}
   SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
-  SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME_ANDROID }}
+  SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
 jobs:
   launch_instance:
     runs-on: windows-latest
@@ -13,7 +13,8 @@ jobs:
         run: |
           echo "$env:USERPROFILE"
           curl -sL -o C:\ttyd.exe "https://github.com/tsl0922/ttyd/releases/download/1.7.4/ttyd.win32.exe"
+          md "$env:USERPROFILE\.ssh"
           ssh-keygen -t ed25519 -q -f "$env:USERPROFILE\.ssh\id_ed25519" -N ""
-          start /B "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901"
-          start /B "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -N "$env:SSH_J_USERNAME"@ssh-j.com -R "$env:SSH_J_HOSTNAME":7681:127.0.0.1:7681 -R "$env:SSH_J_HOSTNAME":5901:127.0.0.1:5901"
+          Start-Job -ScriptBlock { ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901 }
+          Start-Job -ScriptBlock { ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -N "$env:SSH_J_USERNAME"@ssh-j.com -R "$env:SSH_J_HOSTNAME":7681:127.0.0.1:7681 -R "$env:SSH_J_HOSTNAME":5901:127.0.0.1:5901 }
           wait 21000
