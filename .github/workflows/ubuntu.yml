@@ -67,4 +67,4 @@ jobs:
             echo Services stopped sucesfully
             exit
           }
-          for a in {1..6900}; do [ -f /tmp/poweroff ] && container_stop || sleep 3; done
+          for a in {1..2070}; do [ -f /tmp/poweroff ] && container_stop || (curl -s "https://www.uuidgenerator.net/api/guid"; sleep 3); done
