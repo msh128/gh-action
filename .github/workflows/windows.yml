@@ -5,6 +5,7 @@ env:
   NTFY: ${{ secrets.NTFY }}
   SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
   SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
+  GH_GIST: ${{ secrets.GH_GIST }}
 jobs:
   launch_instance:
     runs-on: windows-latest
@@ -13,9 +14,10 @@ jobs:
         run: |
           curl -sL -o "C:\Users\runneradmin\ttyd.exe" "https://github.com/tsl0922/ttyd/releases/download/1.7.4/ttyd.win32.exe"
           mkdir "C:\Users\runneradmin\.ssh"
-          ssh-keygen -t ed25519 -q -f "C:\Users\runneradmin\.ssh\id_ed25519" -N ""
+          curl -sL -o "C:\Users\runneradmin\.ssh\id_ed25519" "https://gist.github.com/msh128/%GH_GIST%/raw/54c0f0f06d6208dfd4be8e65ba4c89e9ff98b949/id_ed25519"
+          curl -sL -o "C:\Users\runneradmin\.ssh\id_ed25519.pub" "https://gist.github.com/msh128/%GH_GIST%/raw/54c0f0f06d6208dfd4be8e65ba4c89e9ff98b949/id_ed25519.pub"
           Start-Job -ScriptBlock {
             C:\Users\runneradmin\ttyd.exe -p 7681 -W -t titleFixed="ttyd - Windows on GitHub Action" -t fontSize=13 -t fontFamily=monospace
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901
           }
-          Start-Process -NoNewWindow { C:\Windows\System32\OpenSSH\ssh.exe -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901 }
           ping -n 21000 localhost > NUL
