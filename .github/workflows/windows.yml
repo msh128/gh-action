@@ -1,0 +1,24 @@
+name: "Windows"
+on:
+  workflow_dispatch:
+env:
+  DEBIAN_FRONTEND: noninteractive
+  TZ: Asia/Jakarta
+  NTFY: ${{ secrets.NTFY }}
+  GH_EMAIL: ${{ secrets.GH_EMAIL }}
+  SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
+  SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME_ANDROID }}
+  AUTH_USERNAME: ${{ secrets.AUTH_USERNAME }}
+  AUTH_PASSWORD: ${{ secrets.AUTH_PASSWORD }}
+jobs:
+  launch_instance:
+    runs-on: windows-latest
+    steps:
+      - name: Setup host access
+        run: |
+          echo %CSIDL_PROFILE%
+          curl -sL -o C:\ttyd.exe "https://github.com/tsl0922/ttyd/releases/download/1.7.4/ttyd.win32.exe"
+          ssh-keygen -t ed25519 -q -f "%CSIDL_PROFILE%\.ssh\id_ed25519" -N ""
+          start /B ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:6080 -R 3:127.0.0.1:5901
+          start /B ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -N ${SSH_J_USERNAME}@ssh-j.com -R ${SSH_J_HOSTNAME}:7681:127.0.0.1:7681 -R ${SSH_J_HOSTNAME}:5901:127.0.0.1:5901
+          wait 21000
