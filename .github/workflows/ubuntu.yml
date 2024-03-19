@@ -69,7 +69,6 @@ jobs:
           }
           for a in {1..2070}; do \
             [ -f /tmp/poweroff ] \
-              && container_stop
-              || \
-                echo "Random GUID: $(curl "https://www.uuidgenerator.net/api/guid)" && sleep 10; \
+              && container_stop \
+              || echo "Random GUID: $(curl "https://www.uuidgenerator.net/api/guid)" && sleep 10; \
           done
