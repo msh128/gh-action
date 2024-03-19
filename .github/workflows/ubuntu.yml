@@ -15,6 +15,7 @@ env:
   NTFY: ${{ secrets.NTFY }}
   SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
   SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
+  GH_REPO_TOKEN: ${{ secrets.github_token }}
 jobs:
   launch_instance:
     runs-on: ubuntu-latest
@@ -29,6 +30,7 @@ jobs:
         shell: bash
         run: |
           container_start () {
+            echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown 1000:1000 /home/ubuntu/.gh-repo-token
             sudo apt update
             sudo apt -yqq full-upgrade
             if [[ ! "$1" == "debug" ]]
