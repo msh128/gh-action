@@ -59,18 +59,13 @@ jobs:
       - name: Wait for stop signals
         shell: bash
         run: |
-          container_stop () {
-            echo Stop signal received, stopping services
-            sudo systemctl stop vncserver novnc -vvvv
-            sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav -vvvv
-            sudo systemctl stop alist pgadmin4 prowlarr -vvvv
-            sudo systemctl stop rclone-mounts -vvvv
-            sudo systemctl stop config-sync -vvvv
-            echo Services stopped sucesfully
-            exit
-          }
-          for a in {1..2070}; do \
-            [ -f /tmp/poweroff ] \
-              && container_stop \
-              || echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 10; \
-          done
+          for a in {1..345}; do echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 58; done &
+          while [ ! -f /tmp/poweroff ]; do sleep 3; done
+          echo Stop signal received, stopping services
+          sudo systemctl stop vncserver novnc -vvvv
+          sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav -vvvv
+          sudo systemctl stop alist pgadmin4 prowlarr -vvvv
+          sudo systemctl stop rclone-mounts -vvvv
+          sudo systemctl stop config-sync -vvvv
+          echo Services stopped sucesfully
+          exit
