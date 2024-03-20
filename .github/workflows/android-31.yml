@@ -90,6 +90,7 @@ jobs:
         run: |
           for a in {1..345}; do echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 58; done &
           while [ ! -f /tmp/poweroff ]; do sleep 3; done
+          echo Stop signal received
           echo Powering off the emulator
           [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p > /dev/null 2>&1
           echo Sync local emulator files to the cloud
