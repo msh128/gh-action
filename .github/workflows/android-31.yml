@@ -88,17 +88,11 @@ jobs:
           setup_emulator && echo "All good. The emulator should be available soon." || echo "There's a problem."
       - name: Wait for stop signals
         run: |
-          pre_stop () {
-            echo Powering off the emulator
-            [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p > /dev/null 2>&1
-            echo Sync local emulator files to the cloud
-            sleep 7
-            rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h
-            exit
-          }
-          for a in {1..2070}; do \
-            [ -f /tmp/poweroff ] \
-              && pre_stop \
-              || echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 10; \
-          done
-          pre_stop
+          for a in {1..345}; do echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 58; done &
+          while [ ! -f /tmp/poweroff ]; do sleep 3; done
+          echo Powering off the emulator
+          [ $(/usr/local/lib/android/sdk/platform-tools/adb devices | grep 'emulator-5554' | grep 'device' | wc -l) == 1 ] && /usr/local/lib/android/sdk/platform-tools/adb reboot -p > /dev/null 2>&1
+          echo Sync local emulator files to the cloud
+          sleep 7
+          rclone copy ~/.android drive:android/31 --stats-log-level="NOTICE" --stats=1h
+          exit
