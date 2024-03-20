@@ -16,7 +16,7 @@ jobs:
           choco install tightvnc -y --installArguments 'SET_USEVNCAUTHENTICATION=1 VALUE_OF_USEVNCAUTHENTICATION=0 SET_ALLOWLOOPBACK=1 VALUE_OF_ALLOWLOOPBACK=1' &
           Start-Process -NoNewWindow -PassThru -FilePath .\ttyd.exe -ArgumentList "-p 7681 -W -t fontSize=13 -t fontFamily=monospace -m 1 C:\Windows\System32\cmd.exe" -RedirectStandardError .\ttyd.err.txt -RedirectStandardOutput .\ttyd.out.txt
           Start-Process -NoNewWindow -PassThru -FilePath C:\Windows\System32\OpenSSH\ssh.exe -ArgumentList "-o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -i C:\Users\runner\.ssh\id_ed25519 srv.us -R 1:127.0.0.1:7681 -R 2:127.0.0.1:5900" -RedirectStandardError .\srv.us.err.txt -RedirectStandardOutput .\srv.us.out.txt
-          Start-Process -NoNewWindow -PassThru -FilePath C:\Windows\System32\OpenSSH\ssh.exe -ArgumentList "-o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -N -i C:\Users\runner\.ssh\id_ed25519 ${{ env:SSH_J_USERNAME }}@ssh-j.com -R ${{ env:SSH_J_HOSTNAME_WINDOWS }}:7681:127.0.0.1:7681 -R ${{ env:SSH_J_HOSTNAME_WINDOWS }}:5901:127.0.0.1:5900"
+          Start-Process -NoNewWindow -PassThru -FilePath C:\Windows\System32\OpenSSH\ssh.exe -ArgumentList "-o StrictHostKeyChecking=no -o UserKnownHostsFile=NUL -o BatchMode=yes -o ServerAliveInterval=5 -T -N -i C:\Users\runner\.ssh\id_ed25519 ${{ env.SSH_J_USERNAME }}@ssh-j.com -R ${{ env.SSH_J_HOSTNAME_WINDOWS }}:7681:127.0.0.1:7681 -R ${{ env.SSH_J_HOSTNAME_WINDOWS }}:5901:127.0.0.1:5900"
           ping localhost -n 7
           Get-Content .\srv.us.out.txt
           for ($i = 0; $i -lt 2071; $i++) {
