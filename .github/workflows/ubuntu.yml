@@ -9,6 +9,7 @@ on:
         - xubuntu-core
         - kde-plasma
         - cinnamon
+        - mate-core
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
