@@ -71,5 +71,5 @@ jobs:
             sudo systemctl stop rclone-mounts -vvvv
             sudo systemctl stop config-sync -vvvv
           }
-          stop_services && echo Services stopped sucesfully || echo Something's wrong
+          stop_services && echo Services stopped sucesfully || echo "Something's wrong"
           exit
