@@ -7,11 +7,10 @@ on:
         description: Select desktop environment
         options:
         - xubuntu-core
-        - kde-plasma
+        - kde-plasma-desktop
         - cinnamon
-        - mate-core
-        - lubuntu-core
-        - ubuntu-desktop-minimal
+        - ubuntu-mate-core
+        - lubuntu-desktop
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
