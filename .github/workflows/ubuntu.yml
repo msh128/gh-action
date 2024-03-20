@@ -11,7 +11,7 @@ on:
         - cinnamon
         - mate-core
         - lubuntu-core
-        - ubuntu-docker-base
+        - ubuntu-desktop-minimal
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
