@@ -31,6 +31,7 @@ jobs:
             ${{ secrets.PRIVATE_KEY_3 }}
       - name: Setting up environtment and required files
         run: |
+          git clone git@github.com:msh128/ubuntu-docker.git
           setup_env_and_files () {
             apt -qq update
             apt -qq full-upgrade
@@ -64,7 +65,6 @@ jobs:
             su - ubuntu -c 'udocker pull xhofe/alist:latest && udocker create --name=alist xhofe/alist:latest; udocker pull dpage/pgadmin4:latest && udocker create --name=pgadmin4 dpage/pgadmin4:latest'
             mkdir -p /mnt/{musahi0128,drive,drive1}
             su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}'
-            git clone git@github.com:msh128/ubuntu-docker.git
             mv -v ubuntu-docker/systemd/* /etc/systemd/system/
             mv -v ubuntu-docker/home/* /home/ubuntu/
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr
