@@ -67,7 +67,7 @@ jobs:
             rclone move ubuntu-docker/home /home/ubuntu
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
-            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf
+            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
       - name: Launch instance
