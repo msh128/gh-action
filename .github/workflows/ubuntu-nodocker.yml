@@ -104,11 +104,11 @@ jobs:
           echo Stop signal received
           echo Stopping services
           stop_services () {
-            sudo systemctl stop vncserver novnc -vvvv
-            sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav -vvvv
-            sudo systemctl stop alist pgadmin4 prowlarr -vvvv
-            sudo systemctl stop rclone-mounts -vvvv
-            sudo systemctl stop config-sync -vvvv
+            sudo systemctl stop vncserver novnc
+            sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav
+            sudo systemctl stop alist pgadmin4 prowlarr
+            sudo systemctl stop rclone-mounts
+            sudo systemctl stop config-sync
           }
           stop_services && echo Services stopped sucesfully || echo "Something's wrong"
           exit
