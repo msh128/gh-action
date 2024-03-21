@@ -1,4 +1,4 @@
-name: "Run interactive session - test with vnc support"
+name: "Run interactive session with vnc support"
 permissions: write-all
 on:
   workflow_dispatch:
