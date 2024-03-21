@@ -64,8 +64,8 @@ jobs:
             mkdir -p /mnt/{musahi0128,drive,drive1}
             su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}'
             mv -v ubuntu-docker/systemd/* /etc/systemd/system/
-            mv -v ubuntu-docker/home/* /home/ubuntu/
-            chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr
+            rclone move ubuntu-docker/home /home/ubuntu
+            chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
