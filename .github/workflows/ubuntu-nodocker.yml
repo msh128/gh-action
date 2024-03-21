@@ -37,10 +37,8 @@ jobs:
             apt -qq full-upgrade
             apt -qq install -y aria2 curl dbus-x11 ffmpeg fuse3 htop inotify-tools jq less libchromaprint-tools mediainfo mkvtoolnix nano ncdu novnc openssh-client openssh-server parallel postgresql-client python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata unzip xfce4-terminal xserver-xorg-video-dummy
             case ${{ inputs.desktop-env }} in
-              xubuntu-core) apt -qq install -y xubuntu-core^;;
-              ubuntu-mate-core) apt -qq install -y ubuntu-mate-core^;;
-              lubuntu-desktop) apt -qq install -y --no-install-recommends lubuntu-desktop;;
-              lubuntu-desktop) apt -qq install -y --no-install-recommends ubuntu-budgie-desktop;;
+              xubuntu-core|ubuntu-mate-core) apt -qq install -y ${{ inputs.desktop-env }}^;;
+              lubuntu-desktop|ubuntu-budgie-desktop) apt -qq install -y ${{ inputs.desktop-env }} --no-install-recommends;;
               *) apt -qq install -y ${{ inputs.desktop-env }};;
             esac
             pip install yt-dlp udocker
