@@ -12,7 +12,6 @@ on:
         - ubuntu-mate-core
         - lubuntu-desktop
         - ubuntu-desktop-minimal
-        - ukui-desktop-environment
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
@@ -50,11 +49,6 @@ jobs:
             mv rclone-*/rclone* /opt/teldrive/
             rm -rf rclone-*
             curl -sL 'https://prowlarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64' | tar xz -C /opt
-            aria2c -q -c 'https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=linux64&lang=en-US'
-            tar xjf firefox-*.tar.bz2 -C /opt
-            ln -s /opt/firefox/firefox /usr/local/bin/firefox
-            rm firefox-*.tar.bz2
-            wget -q https://raw.githubusercontent.com/mozilla/sumo-kb/main/install-firefox-linux/firefox.desktop -P /usr/local/share/applications
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
             chmod a+x /usr/local/bin/ttyd /opt/teldrive/teldrive /opt/teldrive/rclone /opt/Prowlarr/Prowlarr
             adduser --disabled-password --gecos '' ubuntu
@@ -79,8 +73,7 @@ jobs:
               sudo systemctl start sshd srv.us ssh-j ttyd
               sudo systemctl start rclone-mounts
               sudo systemctl start alist pgadmin4 prowlarr
-              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
-              sudo systemctl start config-sync
+              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav config-sync
               sudo systemctl start vncserver novnc
             else
               sudo systemctl start srv.us ssh-j ttyd
