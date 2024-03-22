@@ -36,16 +36,18 @@ jobs:
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown 1000:1000 /home/ubuntu/.gh-repo-token
             sudo apt update
             sudo apt -yqq full-upgrade
-            sudo service start dbus
+            sudo service dbus start
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             if [[ ! "$1" == "debug" ]]
             then
               sudo systemctl start sshd srv.us ssh-j ttyd
               sudo systemctl start rclone-mounts
               sudo systemctl start alist pgadmin4 prowlarr
-              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
+              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
               sudo systemctl start config-sync
-              sudo systemctl start vncserver novnc
+              [ "${{ inputs.desktop-env }}" == "ubuntu-desktop-minimal" ] \
+                && (export XDG_SESSION_TYPE=x11; export GDK_BACKEND=x11; exec dbus-launch gnome-session) \
+                || sudo systemctl start vncserver
             else
               sudo systemctl start srv.us ssh-j ttyd
             fi
