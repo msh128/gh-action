@@ -11,6 +11,7 @@ on:
         - cinnamon
         - ubuntu-mate-core
         - lubuntu-desktop
+        - ubuntu-desktop-minimal
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
@@ -35,6 +36,8 @@ jobs:
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown 1000:1000 /home/ubuntu/.gh-repo-token
             sudo apt update
             sudo apt -yqq full-upgrade
+            sudo service start dbus
+            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             if [[ ! "$1" == "debug" ]]
             then
               sudo systemctl start sshd srv.us ssh-j ttyd
