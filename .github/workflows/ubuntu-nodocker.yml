@@ -39,9 +39,9 @@ jobs:
               xubuntu-core|ubuntu-mate-core) apt -qq install -y ${{ inputs.desktop-env }}^;;
               lubuntu-desktop) apt -qq install -y ${{ inputs.desktop-env }} --no-install-recommends;;
               *) apt -qq install -y ${{ inputs.desktop-env }};;
-            esac
-            pip install yt-dlp udocker
-            curl -s https://rclone.org/install.sh | bash
+            esac &
+            pip install yt-dlp udocker &
+            curl -s https://rclone.org/install.sh | bash &
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
             mkdir -p /opt/teldrive
             curl -sL $(curl -s 'https://api.github.com/repos/divyam234/teldrive/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64")).browser_download_url') | tar xz -C /opt/teldrive teldrive && curl -sLO $(curl -s 'https://api.github.com/repos/divyam234/rclone/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64.zip")).browser_download_url')
