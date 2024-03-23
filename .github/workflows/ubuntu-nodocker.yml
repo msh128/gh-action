@@ -20,7 +20,7 @@ env:
   SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
   GH_REPO_TOKEN: ${{ secrets.github_token }}
 jobs:
-  launch_instance_${{ inputs.desktop-env }}:
+  launch_instance:
     runs-on: ubuntu-latest
     steps:
       - name: Setup SSH key
