@@ -54,7 +54,6 @@ jobs:
             mv rclone-*/rclone* /opt/teldrive/
             rm -rf rclone-*
             curl -sL 'https://prowlarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64' | tar xz -C /opt
-            sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
             chmod a+x /usr/local/bin/ttyd /opt/teldrive/teldrive /opt/teldrive/rclone /opt/Prowlarr/Prowlarr
             adduser --disabled-password --gecos '' ubuntu
             adduser ubuntu sudo
@@ -66,8 +65,9 @@ jobs:
             rclone move -L ubuntu-docker/home /home/ubuntu
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
-            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             wait
+            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
+            sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
       - name: Launch instance
