@@ -54,7 +54,7 @@ jobs:
             adduser --disabled-password --gecos '' ubuntu
             adduser ubuntu sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-            su - ubuntu -c 'udocker pull xhofe/alist:latest && udocker create --name=alist xhofe/alist:latest; udocker pull dpage/pgadmin4:latest && udocker create --name=pgadmin4 dpage/pgadmin4:latest'
+            su - ubuntu -c 'udocker pull xhofe/alist:latest && udocker create --name=alist xhofe/alist:latest; udocker pull dpage/pgadmin4:latest && udocker create --name=pgadmin4 dpage/pgadmin4:latest' &
             mkdir -p /mnt/{musahi0128,drive,drive1}
             su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}'
             mv -v ubuntu-docker/systemd/* /etc/systemd/system/
@@ -62,6 +62,7 @@ jobs:
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
+            wait
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
       - name: Launch instance
