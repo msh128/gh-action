@@ -68,16 +68,11 @@ jobs:
         run: |
           container_start () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown ubuntu:ubuntu /home/ubuntu/.gh-repo-token
-            if [[ ! "$1" == "debug" ]]
-            then
-              sudo systemctl start sshd srv.us ssh-j ttyd
-              sudo systemctl start rclone-mounts
-              sudo systemctl start alist pgadmin4 prowlarr
-              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav config-sync
-              sudo systemctl start vncserver novnc
-            else
-              sudo systemctl start srv.us ssh-j ttyd
-            fi
+            sudo systemctl start sshd srv.us ssh-j ttyd
+            sudo systemctl start rclone-mounts
+            sudo systemctl start alist pgadmin4 prowlarr
+            sudo systemctl start qbittorrent-nox teldrive teldrive-webdav config-sync
+            sudo systemctl start vncserver novnc
           } > /dev/null 2>&1
           ntfy_message () {
             echo Ubuntu on GitHub Action
