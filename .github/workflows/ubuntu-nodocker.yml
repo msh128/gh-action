@@ -65,7 +65,8 @@ jobs:
             wait
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
-            rclone size /var/apt/cache
+            apt autoremove
+            apt clean
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
       - name: Launch instance
