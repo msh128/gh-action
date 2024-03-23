@@ -58,7 +58,7 @@ jobs:
             mkdir -p /mnt/{musahi0128,drive,drive1}
             su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}'
             mv -v ubuntu-docker/systemd/* /etc/systemd/system/
-            rclone move ubuntu-docker/home /home/ubuntu
+            rclone move -L ubuntu-docker/home /home/ubuntu
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
