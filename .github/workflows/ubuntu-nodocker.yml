@@ -1,4 +1,4 @@
-name: "Launch Ubuntu with ${{ inputs.desktop-env }}"
+name: "Launch Ubuntu"
 on:
   workflow_dispatch:
     inputs:
