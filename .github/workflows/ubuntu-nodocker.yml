@@ -1,4 +1,4 @@
-name: "Launch Ubuntu from the docker image"
+name: "Launch Ubuntu"
 on:
   workflow_dispatch:
     inputs:
