@@ -28,7 +28,7 @@ jobs:
         with: 
           ssh-private-key: |
             ${{ secrets.PRIVATE_KEY_3 }}
-      - name: Preparing Ubuntu with ${{ inputs.desktop-env }}
+      - name: Preparing ${{ inputs.desktop-env }}
         run: |
           git clone git@github.com:msh128/ubuntu-docker.git
           setup_env_and_files () {
