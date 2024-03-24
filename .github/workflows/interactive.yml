@@ -10,6 +10,10 @@ jobs:
     steps:
       - name: launch_instance
         run: |
+          docker system prune -a -f
+          sudo docker system prune -a -f
+          sudo rm -rf /usr/local/lib/android
+          sudo curl -sL -o /usr/bin/crun 'https://github.com/containers/crun/releases/download/1.14.4/crun-1.14.4-linux-amd64' && chmod a+x /usr/bin/crun
           echo $GH_TOKEN > .gh_token && chmod 600 .gh_token
           (sudo apt -qq update && sudo apt -qq upgrade -y) > /dev/null 2>&1
           ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N "" && chmod 600 "$HOME/.ssh/id_ed25519"
