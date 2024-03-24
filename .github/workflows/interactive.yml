@@ -10,38 +10,41 @@ jobs:
     steps:
       - name: launch_instance
         run: |
-          (
-            sudo curl -sL -o /usr/bin/crun 'https://github.com/containers/crun/releases/download/1.14.4/crun-1.14.4-linux-amd64'
-            sudo chmod a+x /usr/bin/crun
-            echo "$GH_TOKEN" | sudo tee /root/.gh_token && sudo chmod 600 /root/.gh_token &
-            sudo apt -qq update
-            sudo apt -qq full-upgrade
-            sudo apt -qq install -y ncdu
-            sudo apt -qq autoremove --purge -y
-            sudo apt -qq clean -y
-            docker system prune -a -f
-            podman system prune -a -f
-            sudo rm -rf /usr/local/lib/android
-          ) > /dev/null 2>&1 &
-          ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N "" && chmod 600 "$HOME/.ssh/id_ed25519"
-          (
-            sudo curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
-            sudo chmod a+x /usr/local/bin/ttyd
-            sudo /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - ${{ github.repository }}" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'cd ~/; source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux'
-            sudo ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 > /tmp/srv.us.addr &
-            sudo ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -R $(hostname):7681:127.0.0.1:7681 &
-          ) > /dev/null 2>&1 &
-          while [ $(cat /tmp/srv.us.addr | wc -l) == 0 ]; do sleep 3; done
-          ntfy_msg () {
-            echo "Interactive session for ${{ github.repository }}"
-            echo ""
-            echo "Connect via srv.us:"
-            cat /tmp/srv.us.addr
-            echo ""
-            echo "Connect via ssh-j.com:"
-            echo "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -L 127.0.4.2:7681:$(hostname):7681"
+          setting_up () {
+            export DEBIAN_FRONTEND=noninteractive
+            su - runner -c 'docker system prune -a -f' &
+            su - runner -c 'podman system prune -a -f' &
+            rm -rf /usr/local/lib/android &
+            curl -sL -o /usr/bin/crun 'https://github.com/containers/crun/releases/download/1.14.4/crun-1.14.4-linux-amd64'
+            chmod a+x /usr/bin/crun &
+            echo "$GH_TOKEN" > /root/.gh_token
+            chmod 600 /root/.gh_token
+            apt update
+            apt full-upgrade -y
+            apt install -y ncdu
+            apt autoremove -y --purge
+            apt clean
           }
-          curl -s -d $(ntfy_msg) ntfy.sh/$NTFY > /dev/null 2>&1
+          sudo bash -c "$(declare -f setting_up); setting_up" > /dev/null 2>&1 &
+          running () {
+            ssh-keygen -t ed25519 -q -f "/root/.ssh/id_ed25519" -N ""
+            chmod 600 "/root/.ssh/id_ed25519"
+            curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
+            chmod a+x /usr/local/bin/ttyd
+            /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - ${{ github.repository }}" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux' &
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T srv.us -R 1:127.0.0.1:7681 > /tmp/srv.us.addr &
+            ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -R $(hostname):7681:127.0.0.1:7681 > /dev/null 2>&1 &
+          }
+          sudo bash -c "$(declare -f running); running" > /dev/null 2>&1 &
+          while [ -f /tmp/srv.us.addr ]; do sleep 3; done
+          while [ $(cat /tmp/srv.us.addr | wc -l) == 0 ]; do sleep 3; done
+          curl -s -d "$(echo 'Interactive session for '${{ github.repository }}'' \
+            && echo '' \
+            && echo 'Connect via srv.us:' \
+            && cat /tmp/srv.us.addr \
+            && echo '' \
+            && echo 'Connect via ssh-j.com:' \
+            && echo 'ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N '$(hostname)'@ssh-j.com -L 127.0.4.2:7681:'$(hostname)':7681')" ntfy.sh/$NTFY > /dev/null 2>&1
           for a in {1..345}
             do
               echo Random GUID: $(curl -s 'https://www.uuidgenerator.net/api/guid')
