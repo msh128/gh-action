@@ -36,7 +36,7 @@ jobs:
             ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -R $(hostname):7681:127.0.0.1:7681 > /dev/null 2>&1 &
           }
           sudo bash -c "$(declare -f running); running" > /dev/null 2>&1 &
-          while [ -f /tmp/srv.us.addr ]; do sleep 3; done
+          while [ ! -f /tmp/srv.us.addr ]; do sleep 3; done
           while [ $(cat /tmp/srv.us.addr | wc -l) == 0 ]; do sleep 3; done
           curl -s -d "$(echo 'Interactive session for '${{ github.repository }}'' \
             && echo '' \
