@@ -2,7 +2,7 @@ name: "Launch Ubuntu"
 on:
   workflow_dispatch:
     inputs:
-      desktop-env:
+      desktop_environment:
         type: choice
         description: Select desktop environment
         options:
@@ -28,20 +28,21 @@ jobs:
         with: 
           ssh-private-key: |
             ${{ secrets.PRIVATE_KEY_3 }}
-      - name: Preparing ${{ inputs.desktop-env }}
+      - name: Preparing ${{ inputs.desktop_environment }}
         run: |
           git clone git@github.com:msh128/ubuntu-docker.git
           setup_env_and_files () {
-            sudo add-apt-repository ppa:apt-fast/stable
+            add-apt-repository ppa:apt-fast/stable
             apt -qq update
             apt -qq full-upgrade
             apt -qq apt-fast aria2
             apt-fast -qq install -y curl dbus-x11 ffmpeg fuse3 htop inotify-tools jq less libchromaprint-tools mediainfo mkvtoolnix nano ncdu novnc openssh-client openssh-server parallel postgresql-client python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata unzip xfce4-terminal xserver-xorg-video-dummy
-            case ${{ inputs.desktop-env }} in
-              xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop-env }}^;;
-              lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop-env }} --no-install-recommends;;
-              *) apt-fast -qq install -y ${{ inputs.desktop-env }};;
+            case ${{ inputs.desktop_environment }} in
+              xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop_environment }}^;;
+              lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop_environment }} --no-install-recommends;;
+              *) apt-fast -qq install -y ${{ inputs.desktop_environment }};;
             esac &
+            echo ${{ inputs.desktop_environment }} > /tmp/desktop_environment
             pip install yt-dlp udocker &
             curl -s https://rclone.org/install.sh | bash &
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
