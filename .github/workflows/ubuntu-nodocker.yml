@@ -85,7 +85,7 @@ jobs:
             sudo systemctl start sshd srv.us ssh-j ttyd
             sudo systemctl start rclone-mounts
             sudo systemctl start alist pgadmin4 prowlarr
-            sudo systemctl start qbittorrent-nox teldrive teldrive-webdav #config-sync
+            sudo systemctl start qbittorrent-nox teldrive teldrive-webdav config-sync
             sudo systemctl start vncserver novnc
           } > /dev/null 2>&1
           ntfy_message () {
@@ -111,7 +111,7 @@ jobs:
             sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav
             sudo systemctl stop alist pgadmin4 prowlarr
             sudo systemctl stop rclone-mounts
-            #sudo systemctl stop config-sync
+            sudo systemctl stop config-sync
           }
           stop_services && echo Services stopped sucesfully || echo "Something's wrong"
           exit
