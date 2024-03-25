@@ -30,6 +30,9 @@ jobs:
             ${{ secrets.PRIVATE_KEY_3 }}
       - name: Preparing ${{ inputs.desktop_environment }}
         run: |
+          su - runner -c 'docker system prune -a -f' &
+          su - runner -c 'podman system prune -a -f' &
+          rm -rf /usr/local/lib/android &
           git clone git@github.com:msh128/ubuntu-docker.git
           setup_env_and_files () {
             add-apt-repository ppa:apt-fast/stable
@@ -64,7 +67,6 @@ jobs:
             chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
             chmod 600 /home/ubuntu/.ssh/*
             wait
-            [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
             apt autoremove
             apt clean
