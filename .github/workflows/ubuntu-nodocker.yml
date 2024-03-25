@@ -12,6 +12,7 @@ on:
         - ubuntu-mate-core
         - lubuntu-desktop
         - ubuntu-desktop-minimal
+        - budgie-desktop-environment
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
