@@ -15,7 +15,7 @@ on:
         - budgie-desktop-environment
       first_run:
         type: boolean
-        description: Is this a first run?
+        description: First run
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
