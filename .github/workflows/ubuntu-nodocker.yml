@@ -12,7 +12,6 @@ on:
         - ubuntu-mate-core
         - lubuntu-desktop
         - ubuntu-desktop-minimal
-        - budgie-desktop-environment
       first_run:
         type: boolean
         description: First run
