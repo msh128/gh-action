@@ -31,7 +31,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -R $(hostname):7681:127.0.0.1:7681 -R $(hostname):6080:127.0.0.1:6080 -R $(hostname):5901:127.0.0.1:5901 &
           while [ $(cat /tmp/srv.us.addr | wc -l) == 0 ]; do sleep 3; done
           ntfy_msg () {
-            echo "Interactive session for ${{ github.repository }}"
+            echo "Interactive session with vnc support for ${{ github.repository }}"
             echo ""
             echo "Connect via srv.us:"
             cat /tmp/srv.us.addr
