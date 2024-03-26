@@ -37,7 +37,7 @@ jobs:
             echo "Connect via ssh-j.com:"
             echo "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o BatchMode=yes -o ServerAliveInterval=5 -T -N $(hostname)@ssh-j.com -L 127.0.4.2:7681:$(hostname):7681 -L 127.0.4.2:6080:$(hostname):6080 -L 127.0.4.2:5901:$(hostname):5901"
             echo ""
-            echo "Start vncserver after installing desktop environment"
+            echo "Start vncserver after installing desktop environment:"
             echo "/usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1"
           }
           curl -s -d "$(ntfy_msg)" ntfy.sh/$NTFY > /dev/null 2>&1
