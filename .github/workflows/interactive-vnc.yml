@@ -11,19 +11,19 @@ jobs:
       - uses: actions/checkout@v4
       - run: |
           (
+            sudo DEBIAN_FRONTEND=noninteractive apt -qq remove -y --purge firefox
             sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
             rm -rf /usr/local/lib/android
           ) > /dev/null 2>&1 &
           (
             sudo apt -qq update
             sudo apt -qq upgrade -y
-            sudo apt-add-repository ppa:elementary-os/stable
             sudo DEBIAN_FRONTEND=noninteractive apt -qq install -y dbus-x11 novnc python3-websockify tigervnc-standalone-server tigervnc-xorg-extension xserver-xorg-video-dummy
             sudo DEBIAN_FRONTEND=noninteractive apt -qq install -y elementary-desktop
           )
           ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N "" && chmod 600 "$HOME/.ssh/id_ed25519"
           curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
-          /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - ${{ github.repository }}" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux' &
+          /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - ${{ github.repository }}" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux' > /dev/null 2>&1 &
           /usr/bin/websockify -D --web=/usr/share/novnc/ 6080 localhost:5901
           sudo sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
           /usr/bin/vncserver -geometry 1920x960 -localhost yes -alwaysshared -SecurityTypes none :1
