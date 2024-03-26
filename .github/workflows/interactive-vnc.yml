@@ -10,10 +10,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: |
+          (
+            sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
+            rm -rf /usr/local/lib/android
+          ) > /dev/null 2>&1 &
           (sudo apt -qq update \
           && sudo apt -qq upgrade -y \
+          && sudo apt-add-repository ppa:elementary-os/stable \
+          && sudo apt-add-repository ppa:versable/elementary-update \
           && sudo DEBIAN_FRONTEND=noninteractive apt -qq install -y dbus-x11 novnc python3-websockify tigervnc-standalone-server tigervnc-xorg-extension xserver-xorg-video-dummy \
-          && sudo DEBIAN_FRONTEND=noninteractive apt -qq install -y ubuntu-desktop-minimal
+          && sudo DEBIAN_FRONTEND=noninteractive apt -qq install -y elementary-desktop elementary-tweaks
           ssh-keygen -t ed25519 -q -f "$HOME/.ssh/id_ed25519" -N "" && chmod 600 "$HOME/.ssh/id_ed25519"
           curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url') && sudo chmod a+x /usr/local/bin/ttyd
           /usr/local/bin/ttyd -p 7681 -W -t titleFixed="ttyd - ${{ github.repository }}" -t fontSize=13 -t fontFamily=monospace -m 1 /bin/bash -lc 'source ~/.bashrc; /usr/bin/tmux a || /usr/bin/tmux' &
