@@ -34,7 +34,7 @@ jobs:
           container_start () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown 1000:1000 /home/ubuntu/.gh-repo-token
             sudo apt update
-            sudo apt -yqq full-upgrade
+            sudo apt -qq full-upgrade -y
             sudo service dbus start
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             if [[ ! "$1" == "debug" ]]
