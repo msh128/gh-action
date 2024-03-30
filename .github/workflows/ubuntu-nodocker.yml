@@ -28,7 +28,7 @@ jobs:
         with: 
           ssh-private-key: |
             ${{ secrets.PRIVATE_KEY_3 }}
-      - name: Preparing ${{ inputs.desktop_environment }}
+      - name: Preparing instance
         run: |
           (sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
             rm -rf /usr/local/lib/android) > /dev/null 2>&1 &
@@ -89,7 +89,7 @@ jobs:
           sudo chown ubuntu:ubuntu -R /home/ubuntu /mnt /opt/teldrive /opt/Prowlarr
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
-      - name: Launch instance
+      - name: Launch ${{ inputs.desktop_environment }}
         run: |
           launch_instance () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown ubuntu:ubuntu /home/ubuntu/.gh-repo-token
