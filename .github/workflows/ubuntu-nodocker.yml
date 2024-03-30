@@ -32,7 +32,7 @@ jobs:
         run: |
           (sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
             rm -rf /usr/local/lib/android) > /dev/null 2>&1 &
-          git clone git@github.com:msh128/ubuntu-docker.git
+          git clone git@github.com:msh128/ubuntu-docker.git > /dev/null 2>&1 &
           setup_env_and_files () {
             (export DEBIAN_FRONTEND=noninteractive
             apt -qq update --fix-missing
