@@ -43,7 +43,7 @@ jobs:
             apt-fast -qq install -y \
             	aria2 curl dbus-x11 ffmpeg fuse3 htop inotify-tools jq less libchromaprint-tools libdbus-glib-1-2 \
             	mediainfo mkvtoolnix nano ncdu novnc openssh-client openssh-server parallel postgresql-client \
-            	python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension \
+            	python3-pip python3-websockify qbittorrent-nox rename sudo speedtest-cli sqlite3 tigervnc-standalone-server tigervnc-xorg-extension \
             	tmux tzdata ubuntu-wallpapers unzip xfce4-terminal xserver-xorg-video-dummy
             apt-fast -qq full-upgrade -y
             time case ${{ inputs.desktop_environment }} in
@@ -96,6 +96,7 @@ jobs:
         run: |
           launch_instance () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown ubuntu:ubuntu /home/ubuntu/.gh-repo-token
+            sudo systemctl daemon-reload
             sudo systemctl start sshd srv.us ssh-j ttyd
             sudo systemctl start rclone-mounts
             sudo systemctl start config-sync
