@@ -45,17 +45,18 @@ jobs:
             	python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension \
             	tmux tzdata ubuntu-wallpapers unzip xfce4-terminal xserver-xorg-video-dummy
             apt-fast -qq full-upgrade -y
-            case ${{ inputs.desktop_environment }} in
+            time case ${{ inputs.desktop_environment }} in
             	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop_environment }}^;;
             	lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop_environment }} --no-install-recommends;;
             	*) apt-fast -qq install -y ${{ inputs.desktop_environment }};;
-            esac) > /dev/null 2>&1 &
+            esac)
             pip install yt-dlp > /dev/null 2>&1 &
             (curl -s https://rclone.org/install.sh | bash) > /dev/null 2>&1
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
             chmod a+x /usr/local/bin/ttyd
             mkdir -p /opt/teldrive
-            curl -sL $(curl -s 'https://api.github.com/repos/divyam234/teldrive/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64")).browser_download_url') | tar xz -C /opt/teldrive teldrive && curl -sLO $(curl -s 'https://api.github.com/repos/divyam234/rclone/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64.zip")).browser_download_url')
+            curl -sL $(curl -s 'https://api.github.com/repos/divyam234/teldrive/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64")).browser_download_url') | tar xz -C /opt/teldrive teldrive
+            curl -sLO $(curl -s 'https://api.github.com/repos/divyam234/rclone/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64.zip")).browser_download_url')
             chmod a+x /opt/teldrive/teldrive
             unzip -qq rclone-*.zip
             mv rclone-*/rclone* /opt/teldrive/
@@ -83,13 +84,12 @@ jobs:
             rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
-          sudo pip install pyopenssl --upgrade > /dev/null 2>&1 &
+          sudo pip install pyopenssl --upgrade > /dev/null 2>&1
           sudo rclone copy ./ubuntu-docker/systemd /etc/systemd/system -L
           sudo rclone copy ./ubuntu-docker/home /home/ubuntu -L
           sudo chown ubuntu:ubuntu -R /home/ubuntu /mnt /opt/teldrive /opt/Prowlarr
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
-          wait
           sudo sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
       - name: Launch ${{ inputs.desktop_environment }}
         run: |
