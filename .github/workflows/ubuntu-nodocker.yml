@@ -49,7 +49,7 @@ jobs:
             	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop_environment }}^;;
             	lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop_environment }} --no-install-recommends;;
             	*) apt-fast -qq install -y ${{ inputs.desktop_environment }};;
-            esac) > /dev/null 2>&1
+            esac) > /dev/null 2>&1 &
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
             pip install yt-dlp > /dev/null 2>&1 &
             (curl -s https://rclone.org/install.sh | bash) > /dev/null 2>&1
