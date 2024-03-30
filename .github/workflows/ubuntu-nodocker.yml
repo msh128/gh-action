@@ -45,10 +45,10 @@ jobs:
             	python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension \
             	tmux tzdata ubuntu-wallpapers unzip xfce4-terminal xserver-xorg-video-dummy
             apt-fast -qq full-upgrade -y
-            case ${VARIANT} in
-            	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${VARIANT}^;;
-            	lubuntu-desktop) apt-fast -qq install -y ${VARIANT} --no-install-recommends;;
-            	*) apt-fast -qq install -y ${VARIANT};;
+            case ${desktop_environment} in
+            	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${desktop_environment}^;;
+            	lubuntu-desktop) apt-fast -qq install -y ${desktop_environment} --no-install-recommends;;
+            	*) apt-fast -qq install -y ${desktop_environment};;
             esac) > /dev/null 2>&1
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
             pip install yt-dlp > /dev/null 2>&1 &
@@ -78,7 +78,7 @@ jobs:
             adduser ubuntu sudo
             echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers) > /dev/null 2>&1
             su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}
-            echo '${VARIANT}' > /home/ubuntu/.desktop_environment' > /dev/null 2>&1
+            echo '${desktop_environment}' > /home/ubuntu/.desktop_environment' > /dev/null 2>&1
             chown ubuntu:ubuntu -R /var/lib/pgadmin /var/log/pgadmin /opt/alist
             (for a in autoremove purge clean; do apt -qq $a; done
             rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
