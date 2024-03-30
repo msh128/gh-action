@@ -12,9 +12,6 @@ on:
         - ubuntu-mate-core
         - lubuntu-desktop
         - ubuntu-desktop-minimal
-      first_run:
-        type: boolean
-        description: First run
 env:
   DEBIAN_FRONTEND: noninteractive
   TZ: Asia/Jakarta
@@ -33,64 +30,74 @@ jobs:
             ${{ secrets.PRIVATE_KEY_3 }}
       - name: Preparing ${{ inputs.desktop_environment }}
         run: |
-          (
-            sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
-            rm -rf /usr/local/lib/android
-          ) > /dev/null 2>&1 &
+          (sudo su - runner -c 'docker system prune -a -f && podman system prune -a -f'
+            rm -rf /usr/local/lib/android) > /dev/null 2>&1 &
           git clone git@github.com:msh128/ubuntu-docker.git
           setup_env_and_files () {
-            echo ${{ inputs.desktop_environment }} > /tmp/desktop_environment
+            (export DEBIAN_FRONTEND=noninteractive
+            apt -qq update --fix-missing
+            apt -qq install -y software-properties-common
             add-apt-repository ppa:apt-fast/stable
-            apt -qq update
-            apt remove firefox --purge
-            apt -qq full-upgrade
-            apt -qq apt-fast aria2
-            apt-fast -qq install -y curl dbus-x11 ffmpeg fuse3 htop inotify-tools jq less libchromaprint-tools mediainfo mkvtoolnix nano ncdu novnc openssh-client openssh-server parallel postgresql-client python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension tmux tzdata ubuntu-wallpapers* unzip xfce4-terminal xserver-xorg-video-dummy
+            apt -qq install -y apt-fast
+            apt-fast -qq install -y \
+            	aria2 curl dbus-x11 ffmpeg fuse3 htop inotify-tools jq less libchromaprint-tools libdbus-glib-1-2 \
+            	mediainfo mkvtoolnix nano ncdu novnc openssh-client openssh-server parallel postgresql-client \
+            	python3-pip python3-websockify qbittorrent-nox rename sudo sqlite3 tigervnc-standalone-server tigervnc-xorg-extension \
+            	tmux tzdata ubuntu-wallpapers unzip xfce4-terminal xserver-xorg-video-dummy
+            apt-fast -qq full-upgrade -y
+            case ${VARIANT} in
+            	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${VARIANT}^;;
+            	lubuntu-desktop) apt-fast -qq install -y ${VARIANT} --no-install-recommends;;
+            	*) apt-fast -qq install -y ${VARIANT};;
+            esac) > /dev/null 2>&1
             sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
-            pip install yt-dlp udocker &
-            curl -s https://rclone.org/install.sh | bash &
+            pip install yt-dlp > /dev/null 2>&1 &
+            (curl -s https://rclone.org/install.sh | bash) > /dev/null 2>&1
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
+            chmod a+x /usr/local/bin/ttyd
             mkdir -p /opt/teldrive
             curl -sL $(curl -s 'https://api.github.com/repos/divyam234/teldrive/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64")).browser_download_url') | tar xz -C /opt/teldrive teldrive && curl -sLO $(curl -s 'https://api.github.com/repos/divyam234/rclone/releases/latest' | jq -r '.assets[] | select(.name|contains("linux-amd64.zip")).browser_download_url')
+            chmod a+x /opt/teldrive/teldrive
             unzip -qq rclone-*.zip
             mv rclone-*/rclone* /opt/teldrive/
+            chmod a+x /opt/teldrive/rclone
             rm -rf rclone-*
             curl -sL 'https://prowlarr.servarr.com/v1/update/master/updatefile?os=linux&runtime=netcore&arch=x64' | tar xz -C /opt
+            chmod a+x /opt/Prowlarr/Prowlarr
+            curl -fsSL 'https://alist.nn.ci/v3.sh' | bash -s install > /dev/null 2>&1
+            mkdir -p /opt/alist/data
+            mkdir -p /var/lib/pgadmin /var/log/pgadmin
+            pip install pgadmin4 > /dev/null 2>&1 &
+            curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash > /dev/null 2>&1 &
             aria2c -q -c 'https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=linux64&lang=en-US'
             tar xjf firefox-*.tar.bz2 -C /opt
             ln -s /opt/firefox/firefox /usr/local/bin/firefox
             rm firefox-*.tar.bz2
             wget -q https://raw.githubusercontent.com/mozilla/sumo-kb/main/install-firefox-linux/firefox.desktop -P /usr/local/share/applications
-            chmod a+x /usr/local/bin/ttyd /opt/teldrive/teldrive /opt/teldrive/rclone /opt/Prowlarr/Prowlarr
-            adduser --disabled-password --gecos '' ubuntu
+            (adduser --disabled-password --gecos '' ubuntu
             adduser ubuntu sudo
-            echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers
-            su - ubuntu -c 'udocker pull xhofe/alist:latest && udocker create --name=alist xhofe/alist:latest; udocker pull dpage/pgadmin4:latest && udocker create --name=pgadmin4 dpage/pgadmin4:latest' &
-            mkdir -p /mnt/{musahi0128,drive,drive1}
-            su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}'
-            mv -v ubuntu-docker/systemd/* /etc/systemd/system/
-            rclone move -L ubuntu-docker/home /home/ubuntu
-            chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr /home/ubuntu
-            chmod 600 /home/ubuntu/.ssh/*
-            wait
-            case ${{ inputs.desktop_environment }} in
-              xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop_environment }}^;;
-              lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop_environment }} --no-install-recommends;;
-              *) apt-fast -qq install -y ${{ inputs.desktop_environment }};;
-            esac
-            apt autoremove
-            apt clean
+            echo 'ubuntu ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers) > /dev/null 2>&1
+            su - ubuntu -c 'mkdir -p /home/ubuntu/{Desktop,Documents,Music,Pictures,Videos,Downloads}
+            echo '${VARIANT}' > /home/ubuntu/.desktop_environment' > /dev/null 2>&1
+            chown ubuntu:ubuntu -R /var/lib/pgadmin /var/log/pgadmin /opt/alist
+            (for a in autoremove purge clean; do apt -qq $a; done
+            rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
+          sudo rclone copy ./systemd /etc/systemd/system
+          sudo su - ubuntu -c 'rclone copy ./home /home/ubuntu'
+          sudo chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr
+          sudo chmod 600 /home/ubuntu/.ssh/*
+          sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
       - name: Launch instance
         run: |
           launch_instance () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown ubuntu:ubuntu /home/ubuntu/.gh-repo-token
             sudo systemctl start sshd srv.us ssh-j ttyd
             sudo systemctl start rclone-mounts
-            sudo systemctl start alist pgadmin4 prowlarr
+            sudo systemctl start config-sync
             sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
-            [ "$first_run" == "false" ] && sudo systemctl start config-sync
+            sudo systemctl start alist pgadmin4 prowlarr
             sudo systemctl start vncserver novnc
           } > /dev/null 2>&1
           ntfy_message () {
@@ -100,7 +107,7 @@ jobs:
             sudo journalctl -u srv.us -g 'https://' -o cat --no-pager
             echo ""
             echo Connect via ssh-j.com:
-            echo "ssh ${SSH_J_USERNAME}@ssh-j.com -N -L 127.0.4.1:22:${SSH_J_HOSTNAME}:22 -L 127.0.4.1:7681:${SSH_J_HOSTNAME}:7681 -L 127.0.4.1:8081:${SSH_J_HOSTNAME}:8081 -L 127.0.4.1:9696:${SSH_J_HOSTNAME}:9696 -L 127.0.4.1:8082:${SSH_J_HOSTNAME}:8082 -L 127.0.4.1:8083:${SSH_J_HOSTNAME}:8083 -L 127.0.4.1:5432:${SSH_J_HOSTNAME}:5432 -L 127.0.4.1:5244:${SSH_J_HOSTNAME}:5244 -L 127.0.4.1:5901:${SSH_J_HOSTNAME}:5901 -L 127.0.4.1:6080:${SSH_J_HOSTNAME}:6080"
+            echo "ssh ${SSH_J_USERNAME}@ssh-j.com -N -L 127.0.4.1:22:${SSH_J_HOSTNAME}:22 -L 127.0.4.1:7681:${SSH_J_HOSTNAME}:7681 -L 127.0.4.1:8081:${SSH_J_HOSTNAME}:8081 -L 127.0.4.1:9696:${SSH_J_HOSTNAME}:9696 -L 127.0.4.1:8082:${SSH_J_HOSTNAME}:8082 -L 127.0.4.1:8083:${SSH_J_HOSTNAME}:8083 -L 127.0.4.1:5050:${SSH_J_HOSTNAME}:5050 -L 127.0.4.1:5244:${SSH_J_HOSTNAME}:5244 -L 127.0.4.1:5901:${SSH_J_HOSTNAME}:5901 -L 127.0.4.1:6080:${SSH_J_HOSTNAME}:6080 -L 127.0.4.1:8084:${SSH_J_HOSTNAME}:8084"
           }
           launch_instance && echo "All services started sucesfully." || echo "Something's wrong"
           while [ ! $(sudo systemctl is-active sshd srv.us ssh-j ttyd rclone-mounts alist pgadmin4 prowlarr qbittorrent-nox teldrive teldrive-webdav vncserver novnc | uniq | wc -l) == 1 ]; do sleep 3; done
@@ -115,8 +122,8 @@ jobs:
             sudo systemctl stop vncserver novnc
             sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav
             sudo systemctl stop alist pgadmin4 prowlarr
+            sudo systemctl stop config-sync
             sudo systemctl stop rclone-mounts
-            [ "$first_run" == "false" ] && sudo systemctl stop config-sync
           }
           stop_services && echo Services stopped sucesfully || echo "Something's wrong"
           exit
