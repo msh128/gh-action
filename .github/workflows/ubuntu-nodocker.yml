@@ -83,14 +83,14 @@ jobs:
             rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
-          sudo pip install pyopenssl --upgrade
+          sudo pip install pyopenssl --upgrade > /dev/null 2>&1 &
           sudo rclone copy ./ubuntu-docker/systemd /etc/systemd/system -L
           sudo rclone copy ./ubuntu-docker/home /home/ubuntu -L
           sudo chown ubuntu:ubuntu -R /home/ubuntu /mnt /opt/teldrive /opt/Prowlarr
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
           wait
-          sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
+          sudo sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
       - name: Launch ${{ inputs.desktop_environment }}
         run: |
           launch_instance () {
