@@ -50,7 +50,7 @@ jobs:
             	xubuntu-core|ubuntu-mate-core) apt-fast -qq install -y ${{ inputs.desktop_environment }}^;;
             	lubuntu-desktop) apt-fast -qq install -y ${{ inputs.desktop_environment }} --no-install-recommends;;
             	*) apt-fast -qq install -y ${{ inputs.desktop_environment }};;
-            esac) > /dev/null 2>&1
+            esac)
             pip install yt-dlp > /dev/null 2>&1 &
             (curl -s https://rclone.org/install.sh | bash) > /dev/null 2>&1
             curl -sL -o /usr/local/bin/ttyd $(curl -s 'https://api.github.com/repos/tsl0922/ttyd/releases/latest' | jq -r '.assets[] | select(.name|contains("x86_64")).browser_download_url')
