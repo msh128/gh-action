@@ -41,9 +41,9 @@ jobs:
             then
               sudo systemctl start sshd srv.us ssh-j ttyd
               sudo systemctl start rclone-mounts
-              sudo systemctl start alist pgadmin4 prowlarr filebrowser
-              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
               sudo systemctl start config-sync
+              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
+              sudo systemctl start alist pgadmin4 prowlarr filebrowser
               sudo systemctl start vncserver
             else
               sudo systemctl start srv.us ssh-j ttyd
