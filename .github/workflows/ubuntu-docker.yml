@@ -41,7 +41,7 @@ jobs:
             then
               sudo systemctl start sshd srv.us ssh-j ttyd
               sudo systemctl start rclone-mounts
-              sudo systemctl start alist pgadmin4 prowlarr
+              sudo systemctl start alist pgadmin4 prowlarr filebrowser
               sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
               sudo systemctl start config-sync
               sudo systemctl start vncserver
@@ -70,7 +70,7 @@ jobs:
           stop_services () {
             sudo systemctl stop vncserver novnc -vvvv
             sudo systemctl stop qbittorrent-nox teldrive teldrive-webdav -vvvv
-            sudo systemctl stop alist pgadmin4 prowlarr -vvvv
+            sudo systemctl stop alist pgadmin4 prowlarr filebrowser -vvvv
             sudo systemctl stop rclone-mounts -vvvv
             sudo systemctl stop config-sync -vvvv
           }
