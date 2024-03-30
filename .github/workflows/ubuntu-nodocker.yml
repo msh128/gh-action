@@ -83,7 +83,7 @@ jobs:
             rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
-          pip3 list --outdated --format=freeze | grep -v '^\-e' | cut -d = -f 1 | xargs -n1 sudo pip3 install -U
+          sudo pip install pyopenssl --upgrade
           sudo rclone copy ./ubuntu-docker/systemd /etc/systemd/system -L
           sudo rclone copy ./ubuntu-docker/home /home/ubuntu -L
           sudo chown ubuntu:ubuntu -R /home/ubuntu /mnt /opt/teldrive /opt/Prowlarr
