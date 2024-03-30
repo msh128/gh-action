@@ -43,9 +43,6 @@ jobs:
               sudo systemctl start rclone-mounts
               sudo systemctl start config-sync
               sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
-              /bin/bash -lc 'cd /home/ubuntu/.filebrowser
-                while [ ! -f /home/ubuntu/.filebrowser/filebrowser.db ]; do sleep 3; done
-                /usr/local/bin/filebrowser config set --port=8084'
               sudo systemctl start alist pgadmin4 prowlarr filebrowser
               sudo systemctl start vncserver
             else
