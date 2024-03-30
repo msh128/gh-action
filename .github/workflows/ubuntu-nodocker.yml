@@ -85,8 +85,8 @@ jobs:
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
           sudo rclone copy ./ubuntu-docker/systemd /etc/systemd/system
-          sudo su - ubuntu -c 'rclone copy ./ubuntu-docker/home /home/ubuntu'
-          sudo chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr
+          sudo rclone copy ./ubuntu-docker/home /home/ubuntu
+          sudo chown ubuntu:ubuntu -R /home/ubuntu /mnt /opt/teldrive /opt/Prowlarr
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
       - name: Launch instance
