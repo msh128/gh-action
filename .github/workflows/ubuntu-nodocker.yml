@@ -92,6 +92,7 @@ jobs:
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
           sudo sed -i 's/tigervncconfig -iconic/#tigervncconfig -iconic/g' /etc/X11/Xtigervnc-session
+          sudo systemctl enable ssh srv.us ssh-j ttyd rclone-mounts config-sync qbittorrent-nox teldrive teldrive-webdav alist pgadmin4 prowlarr vncserver novnc
       - name: Launch ${{ inputs.desktop_environment }}
         run: |
           launch_instance () {
