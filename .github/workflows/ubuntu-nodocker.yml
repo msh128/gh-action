@@ -84,8 +84,8 @@ jobs:
             rm -rf /var/lib/apt/lists/*) > /dev/null 2>&1
           }
           sudo bash -c "$(declare -f setup_env_and_files); setup_env_and_files"
-          sudo rclone copy ./systemd /etc/systemd/system
-          sudo su - ubuntu -c 'rclone copy ./home /home/ubuntu'
+          sudo rclone copy ./ubuntu-docker/systemd /etc/systemd/system
+          sudo su - ubuntu -c 'rclone copy ./ubuntu-docker/home /home/ubuntu'
           sudo chown ubuntu:ubuntu -R /mnt /opt/teldrive /opt/Prowlarr
           sudo chmod 600 /home/ubuntu/.ssh/*
           sudo su - ubuntu -c 'mkdir -p /mnt/{musahi0128,drive,drive1}'
