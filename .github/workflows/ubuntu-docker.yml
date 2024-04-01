@@ -17,7 +17,7 @@ env:
   NTFY: ${{ secrets.NTFY }}
   SSH_J_USERNAME: ${{ secrets.SSH_J_USERNAME }}
   SSH_J_HOSTNAME: ${{ secrets.SSH_J_HOSTNAME }}
-  GH_REPO_TOKEN: ${{ secrets.github_token }}
+  GH_TOKEN: ${{ secrets.GH_PAT }}
 jobs:
   launch_instance:
     runs-on: ubuntu-latest
@@ -26,13 +26,13 @@ jobs:
       options: --user 1000 --device /dev/fuse --tmpfs /tmp --tmpfs /run -v /sys/fs/cgroup:/sys/fs/cgroup:ro --cap-add SYS_ADMIN --privileged
       credentials:
         username: ${{ github.actor }}
-        password: ${{ secrets.github_token }}
+        password: ${{ env.GH_TOKEN }}
     steps:
       - name: Launch ${{ inputs.desktop-env }}
         shell: bash
         run: |
           container_start () {
-            echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown 1000:1000 /home/ubuntu/.gh-repo-token
+            echo "$GH_TOKEN" > /home/ubuntu/.gh-token && chmod 600 /home/ubuntu/.gh-token && chown 1000:1000 /home/ubuntu/.gh-token
             sudo apt update
             sudo apt -qq full-upgrade -y
             sudo service dbus start
