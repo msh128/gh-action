@@ -70,6 +70,10 @@ jobs:
             mkdir -p /var/lib/pgadmin /var/log/pgadmin
             pip install pgadmin4 > /dev/null 2>&1 &
             curl -fsSL https://raw.githubusercontent.com/filebrowser/get/master/get.sh | bash > /dev/null 2>&1 &
+            curl -sLO https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+            dpkg -i cloudflared-linux-amd64.deb
+            apt install -f
+            rm cloudflared-linux-amd64.deb
             aria2c -q -c 'https://download.mozilla.org/?product=firefox-esr-latest-ssl&os=linux64&lang=en-US'
             tar xjf firefox-*.tar.bz2 -C /opt
             ln -s /opt/firefox/firefox /usr/local/bin/firefox
@@ -101,7 +105,7 @@ jobs:
           launch_instance () {
             echo "$GH_REPO_TOKEN" > /home/ubuntu/.gh-repo-token && chmod 600 /home/ubuntu/.gh-repo-token && chown ubuntu:ubuntu /home/ubuntu/.gh-repo-token
             sudo systemctl daemon-reload
-            sudo systemctl start sshd srv.us ssh-j ttyd
+            sudo systemctl start sshd srv.us ssh-j cloudflared ttyd
             sudo systemctl start rclone-mounts
             sudo systemctl start config-sync
             sudo systemctl start qbittorrent-nox teldrive teldrive-webdav
@@ -115,10 +119,13 @@ jobs:
             echo Ubuntu on GitHub Action
             echo ""
             echo Connect via srv.us:
-            sudo journalctl -u srv.us -g 'https://' -o cat --no-pager
+            sudo journalctl -u srv.us --no-pager | grep ': https'
             echo ""
             echo Connect via ssh-j.com:
             echo "ssh ${SSH_J_USERNAME}@ssh-j.com -N -L 127.0.4.1:22:${SSH_J_HOSTNAME}:22 -L 127.0.4.1:7681:${SSH_J_HOSTNAME}:7681 -L 127.0.4.1:8081:${SSH_J_HOSTNAME}:8081 -L 127.0.4.1:9696:${SSH_J_HOSTNAME}:9696 -L 127.0.4.1:8082:${SSH_J_HOSTNAME}:8082 -L 127.0.4.1:8083:${SSH_J_HOSTNAME}:8083 -L 127.0.4.1:5050:${SSH_J_HOSTNAME}:5050 -L 127.0.4.1:5244:${SSH_J_HOSTNAME}:5244 -L 127.0.4.1:5901:${SSH_J_HOSTNAME}:5901 -L 127.0.4.1:6080:${SSH_J_HOSTNAME}:6080 -L 127.0.4.1:8084:${SSH_J_HOSTNAME}:8084"
+            echo ""
+            echo Connect via cloudflared:
+            cat /home/ubuntu/.cloudflared/cloudflared.addr
           }
           launch_instance && echo "All services started sucesfully." || echo "Something's wrong"
           while [ ! $(sudo systemctl is-active sshd srv.us ssh-j ttyd rclone-mounts alist pgadmin4 prowlarr qbittorrent-nox teldrive teldrive-webdav vncserver novnc | uniq | wc -l) == 1 ]; do sleep 3; done
