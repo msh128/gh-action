@@ -39,7 +39,7 @@ jobs:
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
             if [[ ! "$1" == "debug" ]]
             then
-              sudo systemctl start sshd srv.us ssh-j ttyd
+              sudo systemctl start sshd srv.us ssh-j cloudflared ttyd
               sudo systemctl start rclone-mounts
               sudo systemctl start config-sync
               sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
