@@ -37,18 +37,13 @@ jobs:
             sudo apt -qq full-upgrade -y
             sudo service dbus start
             [ -f /etc/gdm3/custom.conf ] && sed -i 's/^#.*WaylandEnable=.*/WaylandEnable=false/' /etc/gdm3/custom.conf || true
-            if [[ ! "$1" == "debug" ]]
-            then
-              sudo systemctl start sshd srv.us ssh-j cloudflared ttyd
-              sudo systemctl start rclone-mounts
-              sudo systemctl start config-sync
-              sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc
-              sudo systemctl start alist pgadmin4 prowlarr filebrowser
-              sudo systemctl start vncserver
-            else
-              sudo systemctl start srv.us ssh-j cloudflared ttyd
-            fi
-          } > /dev/null 2>&1
+            sudo systemctl start sshd srv.us ssh-j cloudflared ttyd -vvvvv
+            sudo systemctl start rclone-mounts -vvvvv
+            sudo systemctl start config-sync -vvvvv
+            sudo systemctl start qbittorrent-nox teldrive teldrive-webdav novnc -vvvvv
+            sudo systemctl start alist pgadmin4 prowlarr filebrowser -vvvvv
+            sudo systemctl start vncserver -vvvvv
+          }
           container_start && echo "All good." || echo "Something's wrong"
           curl -s -d "$(bash /home/ubuntu/.config/info.sh)" ntfy.sh/$NTFY > /dev/null 2>&1
       - name: Wait for stop signals
