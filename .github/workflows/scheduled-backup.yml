@@ -3,34 +3,24 @@ on:
   workflow_dispatch:
   schedule:
   - cron: "0 */6 * * *"
-env:
-  GH_TOKEN: ${{ secrets.GH_PAT }}
 jobs:
   perform_backup:
     runs-on: ubuntu-latest
     steps:
+      - name: Setup SSH key
+        uses: webfactory/ssh-agent@v0.9.0
+        with: 
+          ssh-private-key: |
+            ${{ secrets.PRIVATE_KEY_1 }}
+            ${{ secrets.PRIVATE_KEY_2 }}
       - name: Clone all repository
         run: |
-          gh repo clone msh128/github-actions
-          gh repo clone msh128/ubuntu-docker-desktop
-          gh repo clone msh128/ubuntu-docker-base
-          gh repo clone msh128/ubuntu-docker
-          gh repo clone msh128/secrets
-          gh repo clone musahi-0128/oci-runner
-          gh repo clone musahi-0128/oci-docker
-          gh repo clone musahi0128/cirrus-ci
-          gh repo clone musahi0128/teldrive-upload.sh
-          gh repo clone musahi0128/mybinder
-          gh repo clone musahi0128/srv.us
-          gh repo clone musahi0128/cloud-encode
-          gh repo clone musahi0128/hm-holv
-          gh repo clone musahi0128/NiceHash_PauseMining
-          gh repo clone musahi0128/manga-downloader
-          gh repo clone musahi0128/Duckstation_HM-BTN_Helper
-          gh repo clone musahi0128/subscene_downloader
-          gh repo clone musahi0128/autoit_ecopaper
-          gh repo clone musahi0128/db_karyawan
-          gh repo clone musahi0128/db_inventaris
+          git clone git@github.com:msh128/github-actions.git
+          git clone git@github.com:msh128/ubuntu-docker-desktop.git
+          git clone git@github.com:msh128/ubuntu-docker-base.git
+          git clone git@github.com:msh128/ubuntu-docker.git
+          git clone git@github.com:musahi-0128/oci-runner.git
+          git clone git@github.com:musahi-0128/oci-docker.git
       - name: Backup to Google Drive
         run: |
           curl https://rclone.org/install.sh | sudo bash > /dev/null 2>&1
