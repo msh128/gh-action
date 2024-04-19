@@ -49,7 +49,7 @@ jobs:
       - name: Wait for stop signals
         shell: bash
         run: |
-          for a in {1..330}; do echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 58; done &
+          for a in {1..320}; do echo "Random GUID: $(curl -s https://www.uuidgenerator.net/api/guid)" && sleep 58; done &
           while [ ! -f /tmp/poweroff ]; do sleep 3; done
           echo Stop signal received
           echo Stopping services
